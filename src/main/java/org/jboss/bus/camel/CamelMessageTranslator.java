@@ -20,8 +20,8 @@
 package org.jboss.bus.camel;
 
 import org.apache.camel.CamelContext;
-import org.apache.camel.ConsumerTemplate;
 import org.apache.camel.Exchange;
+import org.apache.camel.Processor;
 import org.apache.camel.ProducerTemplate;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -32,35 +32,30 @@ import org.jboss.bus.api.Message;
 import org.jboss.bus.internal.AbstractMessageTranslator;
 import org.jboss.bus.internal.MessageImpl;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Properties;
-import java.io.IOException;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.stream.Collectors;
-
-import static java.lang.System.getProperty;
 
 /**
  * @author <a href="mailto:lenka@vecerovi.com">Lenka Večeřa</a>
  */
 public class CamelMessageTranslator extends AbstractMessageTranslator {
 
+   private static final String CAMEL_PROPERTIES = "/camel.properties";
+   private static final String TRANSLATOR_SIGNATURE = "federated.bus.processed";
+
+   private static final Logger log = LogManager.getLogger(CamelMessageTranslator.class);
+
    private CamelContext camelContext;
    private Set<String> inputEndpoints;
    private Set<String> outputEndpoints;
 
    private ProducerTemplate producerTemplate;
-
-   private static final String CAMEL_PROPERTIES = "camel.properties";
-   private static final Logger log = LogManager.getLogger(CamelMessageTranslator.class);
-
-   private ThreadPoolExecutor executor;
-
 
    public CamelMessageTranslator(CamelContext camelContext) {
       this.camelContext = camelContext;
@@ -73,19 +68,24 @@ public class CamelMessageTranslator extends AbstractMessageTranslator {
       }
 
       String input = props.getProperty("input");
-
-      inputEndpoints = Arrays.asList(input.split(",")).stream().map(StringUtils::strip).collect(Collectors.toSet());
+      if (input != null) {
+         inputEndpoints = Arrays.asList(input.split(",")).stream().map(StringUtils::strip).collect(Collectors.toSet());
+      } else {
+         inputEndpoints = new HashSet<>();
+      }
 
       String output = props.getProperty("output");
-
-      outputEndpoints = Arrays.asList(output.split(",")).stream().map(StringUtils::strip).collect(Collectors.toSet());
+      if (output != null) {
+         outputEndpoints = Arrays.asList(output.split(",")).stream().map(StringUtils::strip).collect(Collectors.toSet());
+      } else {
+         outputEndpoints = new HashSet<>();
+      }
 
       if ((inputEndpoints.size() + outputEndpoints.size()) < 1) {
          log.warn("Input or output endpoint has to be defined.");
       }
 
       producerTemplate = camelContext.createProducerTemplate();
-
    }
 
    @Override
@@ -93,41 +93,73 @@ public class CamelMessageTranslator extends AbstractMessageTranslator {
       super.start(federatedBus);
 
       if (inputEndpoints.size() > 0) {
-         executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(inputEndpoints.size());
-         inputEndpoints.forEach(endpoint -> executor.submit(new MessageConsumer(camelContext, endpoint)));
+         inputEndpoints.forEach(endpoint -> {
+            try {
+               camelContext.getEndpoint(endpoint).createConsumer(new MessageConsumer()).start();
+            } catch (Exception e) {
+               log.error("Unable to start consumer for endpoint {}", endpoint);
+            }
+         });
       }
    }
 
-   private class MessageConsumer implements Runnable {
+   @Override
+   public void stop() {
+      super.stop();
+   }
 
-      private String endpoint;
-      private ConsumerTemplate consumerTemplate;
+   @Override
+   public void sendMessage(Message message) throws FederatedBusException {
+      outputEndpoints.forEach(endpoint -> {
+         producerTemplate.asyncSend(endpoint, new MessageProcessor(message.getPayload(), message.getHeaders()));
+         log.warn("sent to {}", endpoint);
+      });
+   }
 
-      public MessageConsumer(CamelContext camelContext, String endpoint) {
-         this.endpoint = endpoint;
-         consumerTemplate = camelContext.createConsumerTemplate();
+   public static boolean isSigned(final Map<String, Object> headers) {
+      return headers.containsKey(TRANSLATOR_SIGNATURE);
+   }
+
+   private class MessageConsumer implements Processor {
+
+      @Override
+      public void process(final Exchange exchange) {
+         if (exchange != null && exchange.getIn().getHeader(TRANSLATOR_SIGNATURE) == null) {
+            Message message;
+            Object messageBody = exchange.getIn().getBody();
+            if (log.isDebugEnabled()) {
+               log.debug("Processing message: {}", messageBody);
+            }
+            if (messageBody == null) {
+               message = new MessageImpl(null);
+            } else if (messageBody instanceof Serializable) {
+               message = new MessageImpl((Serializable) messageBody);
+            } else {
+               message = new MessageImpl(messageBody.toString());
+            }
+
+            message.setHeaders(exchange.getIn().getHeaders());
+            federatedBus.processMessage(message);
+         }
+      }
+   }
+
+   private class MessageProcessor implements Processor {
+
+      private final Object body;
+      private final Map<String, Object> headers;
+
+
+      public MessageProcessor(final Object body, final Map<String, Object> headers) {
+         this.body = body;
+         this.headers = headers;
       }
 
       @Override
-      public void run() {
-         while (!Thread.currentThread().isInterrupted()) {
-            Exchange exchange = consumerTemplate.receive(endpoint);
-
-            if (exchange != null) {
-               Message message;
-               Object messageBody = exchange.getIn().getBody();
-               if (messageBody == null) {
-                  message = new MessageImpl(null);
-               } else if (messageBody instanceof Serializable) {
-                  message = new MessageImpl((Serializable) messageBody);
-               } else {
-                  message = new MessageImpl(messageBody.toString());
-               }
-
-               message.setHeaders(exchange.getIn().getHeaders());
-               federatedBus.processMessage(message);
-            }
-         }
+      public void process(Exchange exchange) throws Exception {
+         exchange.getIn().setBody(body);
+         exchange.getIn().setHeaders(headers);
+         exchange.getIn().setHeader(TRANSLATOR_SIGNATURE, true);
       }
    }
 }

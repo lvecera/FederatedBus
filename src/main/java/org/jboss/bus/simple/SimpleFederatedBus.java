@@ -60,11 +60,8 @@ public class SimpleFederatedBus extends AbstractFederatedBus {
 
    @Override
    public void stop() {
-      try {
-         executor.awaitTermination(10, TimeUnit.SECONDS);
-      } catch (InterruptedException e) {
-         log.warn("Terminated while there were some deliveries in progress: ", e);
-      }
+      executor.shutdown();
+      super.stop();
    }
 
 }
