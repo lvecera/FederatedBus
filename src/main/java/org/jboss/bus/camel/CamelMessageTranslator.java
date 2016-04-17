@@ -26,6 +26,7 @@ import org.apache.camel.ProducerTemplate;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jboss.bus.api.CompoundContext;
 import org.jboss.bus.api.FederatedBus;
 import org.jboss.bus.api.FederatedBusException;
 import org.jboss.bus.api.Message;
@@ -57,7 +58,13 @@ public class CamelMessageTranslator extends AbstractMessageTranslator {
 
    private ProducerTemplate producerTemplate;
 
-   public CamelMessageTranslator(CamelContext camelContext) {
+   @Override
+   public void initialize(CompoundContext compoundContext) {
+      super.initialize(compoundContext);
+      initCamel(compoundContext.getContext(CamelContext.class));
+   }
+
+   private void initCamel(CamelContext camelContext) {
       this.camelContext = camelContext;
 
       Properties props = new Properties();

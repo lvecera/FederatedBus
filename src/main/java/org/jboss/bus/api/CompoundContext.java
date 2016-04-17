@@ -17,27 +17,12 @@
  * limitations under the License.
  * -----------------------------------------------------------------------/
  */
-package org.jboss.bus.internal;
-
-import org.jboss.bus.api.CompoundContext;
-import org.jboss.bus.api.FederatedBus;
-import org.jboss.bus.api.MessageTranslator;
+package org.jboss.bus.api;
 
 /**
  * @author <a href="mailto:lenka@vecerovi.com">Lenka Večeřa</a>
  */
-abstract public class AbstractMessageTranslator implements MessageTranslator {
+public interface CompoundContext {
 
-   protected FederatedBus federatedBus;
-   protected CompoundContext compoundContext;
-
-   @Override
-   public void initialize(CompoundContext compoundContext) {
-      this.compoundContext = compoundContext;
-   }
-
-   @Override
-   public void start(FederatedBus federatedBus) {
-      this.federatedBus = federatedBus;
-   }
+   <T> T getContext(final Class<T> clazz);
 }

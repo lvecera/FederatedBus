@@ -5,6 +5,7 @@ import org.apache.camel.Message;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.impl.DefaultCamelContext;
+import org.jboss.bus.internal.CompoundContextImpl;
 import org.jboss.bus.simple.SimpleFederatedBus;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -27,7 +28,10 @@ public class CamelMessageTranslatorTest {
       camelContext.start();
 
       SimpleFederatedBus federatedBus = new SimpleFederatedBus();
-      CamelMessageTranslator messageTranslator = new CamelMessageTranslator(camelContext);
+      CompoundContextImpl compoundContext = new CompoundContextImpl();
+      compoundContext.putContext(CamelContext.class, camelContext);
+      CamelMessageTranslator messageTranslator = new CamelMessageTranslator();
+      messageTranslator.initialize(compoundContext);
       federatedBus.registerTranslator(messageTranslator);
 
       federatedBus.start();

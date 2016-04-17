@@ -25,6 +25,12 @@ package org.jboss.bus.api;
 public interface MessageTranslator {
 
    /**
+    * Initialize message translator with given compound context
+    * @param compoundContext
+    */
+   void initialize(final CompoundContext compoundContext);
+
+   /**
     * Starts message translator.
     *
     * @param federatedBus that starting the message translator

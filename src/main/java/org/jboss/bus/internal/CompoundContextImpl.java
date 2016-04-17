@@ -20,24 +20,27 @@
 package org.jboss.bus.internal;
 
 import org.jboss.bus.api.CompoundContext;
-import org.jboss.bus.api.FederatedBus;
-import org.jboss.bus.api.MessageTranslator;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:lenka@vecerovi.com">Lenka Večeřa</a>
  */
-abstract public class AbstractMessageTranslator implements MessageTranslator {
+public class CompoundContextImpl implements CompoundContext {
 
-   protected FederatedBus federatedBus;
-   protected CompoundContext compoundContext;
+   private Map<String, Object> contexts = new HashMap<>();
 
    @Override
-   public void initialize(CompoundContext compoundContext) {
-      this.compoundContext = compoundContext;
+   public <T> T getContext(final Class<T> clazz) {
+      return (T) contexts.get(clazz.getCanonicalName());
    }
 
-   @Override
-   public void start(FederatedBus federatedBus) {
-      this.federatedBus = federatedBus;
+   public void putContext(final Object context) {
+      contexts.put(context.getClass().getCanonicalName(), context);
+   }
+
+   public void putContext(final Class iface, final Object context) {
+      contexts.put(iface.getCanonicalName(), context);
    }
 }

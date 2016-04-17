@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="urn:federated:bus:1.0" xmlns:bus="urn:federated:bus:1.0"
+            version="1.0" targetNamespace="urn:federated:bus:1.0" elementFormDefault="qualified">
+   <xsd:complexType name="propertyType">
+      <xsd:sequence>
+         <xsd:any processContents="skip" minOccurs="0"/>
+      </xsd:sequence>
+      <xsd:attribute name="name" type="xsd:string"/>
+      <xsd:attribute name="value" type="xsd:string"/>
+   </xsd:complexType>
+   <xsd:complexType name="propertiesType">
+      <xsd:sequence>
+         <xsd:element name="property" maxOccurs="unbounded" minOccurs="0" type="bus:propertyType"/>
+      </xsd:sequence>
+   </xsd:complexType>
+
+   <xsd:element name="federated">
+      <xsd:complexType>
+         <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="1" name="bus">
+               <xsd:complexType>
+                  <xsd:sequence>
+                     <xsd:element name="properties" maxOccurs="1" minOccurs="0" type="bus:propertiesType"/>
+                     <xsd:element name="translators" minOccurs="0" maxOccurs="1">
+                        <xsd:complexType>
+                           <xsd:sequence>
+                              <xsd:element maxOccurs="unbounded" minOccurs="0" name="translator">
+                                 <xsd:complexType>
+                                    <xsd:sequence>
+                                       <xsd:element name="properties" maxOccurs="1" minOccurs="0" type="bus:propertiesType"/>
+                                    </xsd:sequence>
+                                    <xsd:attribute name="class" type="xsd:string" />
+                                 </xsd:complexType>
+                              </xsd:element>
+                           </xsd:sequence>
+                        </xsd:complexType>
+                     </xsd:element>
+                  </xsd:sequence>
+                  <xsd:attribute name="class" type="xsd:string"/>
+               </xsd:complexType>
+            </xsd:element>
+         </xsd:sequence>
+      </xsd:complexType>
+   </xsd:element>
+</xsd:schema>
