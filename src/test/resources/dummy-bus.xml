@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<federated xmlns="urn:federated:bus:1.0">
+   <bus class="org.jboss.bus.simple.DummyFederatedBus">
+      <properties>
+         <property name="a" value="true" />
+      </properties>
+      <translators>
+         <translator class="org.jboss.bus.simple.DummyMessageTranslator">
+            <properties>
+               <property name="prop1" value="123" />
+               <property name="prop2"><hello /></property>
+            </properties>
+         </translator>
+      </translators>
+   </bus>
+</federated>

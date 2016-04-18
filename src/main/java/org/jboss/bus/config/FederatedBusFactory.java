@@ -28,8 +28,10 @@ import org.jboss.bus.api.FederatedBus;
 import org.jboss.bus.api.FederatedBusException;
 import org.jboss.bus.api.MessageTranslator;
 import org.jboss.bus.config.model.Federated;
+import org.jboss.bus.config.model.PropertyType;
 import org.jboss.bus.internal.CompoundContextImpl;
 import org.jboss.bus.internal.ObjectFactory;
+import org.w3c.dom.Element;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
@@ -95,20 +97,35 @@ public class FederatedBusFactory {
 
    }
 
+   private Properties parseProperties(final List<PropertyType> properties) throws FederatedBusException{
+      final Properties myProps = new Properties();
+
+      for(final PropertyType pt: properties) {
+         final String value = pt.getValue();
+         final Element element = pt.getAny();
+
+         if (value != null && element != null) {
+            throw new FederatedBusException(String.format("A property tag can either have an attribute value (%s) or the body (%s) set, not both at the same time.", value, element.toString()));
+         } else if (element == null && value == null) {
+            throw new FederatedBusException("A property tag must either have an attribute value or the body set.");
+         }
+
+         myProps.put(pt.getName(), value == null ? element : value);
+      }
+
+      return myProps;
+   }
+
    public List<FederatedBus> loadFromXml(final String fileName, final CompoundContext compoundContext) throws FederatedBusException {
       final List<FederatedBus> buses = new LinkedList<>();
       final Federated federated = getBusModel(fileName);
 
       try {
          for (Federated.Bus bus : federated.getBus()) {
-            final Properties busProps = new Properties();
-            bus.getProperties().getProperty().forEach(p -> busProps.setProperty(p.getName(), p.getValue()));
-            final FederatedBus myBus = (FederatedBus) ObjectFactory.createInstance(bus.getClazz(), busProps);
+            final FederatedBus myBus = (FederatedBus) ObjectFactory.createInstance(bus.getClazz(), parseProperties(bus.getProperties().getProperty()));
 
             for (Federated.Bus.Translators.Translator trans : bus.getTranslators().getTranslator()) {
-               final Properties transProps = new Properties();
-               trans.getProperties().getProperty().forEach(p ->transProps.setProperty(p.getName(), p.getValue()));
-               final MessageTranslator myTrans = (MessageTranslator) ObjectFactory.createInstance(trans.getClazz(), transProps);
+               final MessageTranslator myTrans = (MessageTranslator) ObjectFactory.createInstance(trans.getClazz(), parseProperties(trans.getProperties().getProperty()));
                myBus.registerTranslator(myTrans);
                myTrans.initialize(compoundContext);
             }

@@ -23,6 +23,7 @@ import org.jboss.bus.api.FederatedBusException;
 import org.jboss.bus.api.Message;
 import org.jboss.bus.internal.AbstractMessageTranslator;
 import org.jboss.bus.internal.MessageImpl;
+import org.w3c.dom.Element;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -32,6 +33,10 @@ import java.util.List;
  * @author <a href="mailto:lenka@vecerovi.com">Lenka Večeřa</a>
  */
 public class DummyMessageTranslator extends AbstractMessageTranslator {
+
+   private Integer prop1;
+
+   private String prop2;
 
    private List<Message> messageStore = new LinkedList<>();
 
@@ -51,5 +56,25 @@ public class DummyMessageTranslator extends AbstractMessageTranslator {
 
    public List<Message> getMessages() {
       return Collections.unmodifiableList(messageStore);
+   }
+
+   public void setProp2AsEmelent(final Element element){
+      this.prop2 = element.getNodeValue();
+   }
+
+   public Integer getProp1() {
+      return prop1;
+   }
+
+   public void setProp1(Integer prop1) {
+      this.prop1 = prop1;
+   }
+
+   public String getProp2() {
+      return prop2;
+   }
+
+   public void setProp2(String prop2) {
+      this.prop2 = prop2;
    }
 }
