@@ -5,6 +5,7 @@ import org.apache.camel.Message;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.impl.DefaultCamelContext;
+import org.jboss.bus.internal.AbstractMessageTranslator;
 import org.jboss.bus.internal.CompoundContextImpl;
 import org.jboss.bus.simple.SimpleFederatedBus;
 import org.testng.Assert;
@@ -31,6 +32,8 @@ public class CamelMessageTranslatorTest {
       CompoundContextImpl compoundContext = new CompoundContextImpl();
       compoundContext.putContext(CamelContext.class, camelContext);
       CamelMessageTranslator messageTranslator = new CamelMessageTranslator();
+      messageTranslator.setInputEndpoints("direct:test1, direct:test2");
+      messageTranslator.setOutputEndpoints("direct:test3, direct:test4");
       messageTranslator.initialize(compoundContext);
       federatedBus.registerTranslator(messageTranslator);
 
@@ -52,16 +55,16 @@ public class CamelMessageTranslatorTest {
       producerTemplate.sendBody("direct:test2", "hi!");
       Thread.sleep(100);
 
-      Assert.assertTrue(CamelMessageTranslator.isSigned(results3.get(0).getHeaders()));
+      Assert.assertTrue(AbstractMessageTranslator.isSigned(results3.get(0).getHeaders()));
       Assert.assertEquals(results3.get(0).getBody().toString(), "hello");
 
-      Assert.assertTrue(CamelMessageTranslator.isSigned(results4.get(0).getHeaders()));
+      Assert.assertTrue(AbstractMessageTranslator.isSigned(results4.get(0).getHeaders()));
       Assert.assertEquals(results4.get(0).getBody().toString(), "hello");
 
-      Assert.assertTrue(CamelMessageTranslator.isSigned(results3.get(1).getHeaders()));
+      Assert.assertTrue(AbstractMessageTranslator.isSigned(results3.get(1).getHeaders()));
       Assert.assertEquals(results3.get(1).getBody().toString(), "hi!");
 
-      Assert.assertTrue(CamelMessageTranslator.isSigned(results4.get(1).getHeaders()));
+      Assert.assertTrue(AbstractMessageTranslator.isSigned(results4.get(1).getHeaders()));
       Assert.assertEquals(results4.get(1).getBody().toString(), "hi!");
 
       federatedBus.stop();

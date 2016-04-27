@@ -24,6 +24,10 @@ package org.jboss.bus.api;
  */
 public interface MessageTranslator {
 
+   String FROM_HEADER = "federated.bus.from";
+   String TRANSLATOR_SIGNATURE = "federated.bus.processed";
+
+
    /**
     * Initialize message translator with given compound context
     * @param compoundContext

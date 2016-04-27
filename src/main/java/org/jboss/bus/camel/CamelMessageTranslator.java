@@ -47,9 +47,6 @@ import java.util.stream.Collectors;
  */
 public class CamelMessageTranslator extends AbstractMessageTranslator {
 
-   private static final String CAMEL_PROPERTIES = "/camel.properties";
-   private static final String TRANSLATOR_SIGNATURE = "federated.bus.processed";
-
    private static final Logger log = LogManager.getLogger(CamelMessageTranslator.class);
 
    private CamelContext camelContext;
@@ -66,31 +63,6 @@ public class CamelMessageTranslator extends AbstractMessageTranslator {
 
    private void initCamel(CamelContext camelContext) {
       this.camelContext = camelContext;
-
-      Properties props = new Properties();
-      try {
-         props.load(CamelMessageTranslator.class.getResourceAsStream(CAMEL_PROPERTIES));
-      } catch (NullPointerException | IOException ioe) {
-         log.warn("Camel message translator is inactive.");
-      }
-
-      String input = props.getProperty("input");
-      if (input != null) {
-         inputEndpoints = Arrays.asList(input.split(",")).stream().map(StringUtils::strip).collect(Collectors.toSet());
-      } else {
-         inputEndpoints = new HashSet<>();
-      }
-
-      String output = props.getProperty("output");
-      if (output != null) {
-         outputEndpoints = Arrays.asList(output.split(",")).stream().map(StringUtils::strip).collect(Collectors.toSet());
-      } else {
-         outputEndpoints = new HashSet<>();
-      }
-
-      if ((inputEndpoints.size() + outputEndpoints.size()) < 1) {
-         log.warn("Input or output endpoint has to be defined.");
-      }
 
       producerTemplate = camelContext.createProducerTemplate();
    }
@@ -123,10 +95,7 @@ public class CamelMessageTranslator extends AbstractMessageTranslator {
       });
    }
 
-   public static boolean isSigned(final Map<String, Object> headers) {
-      return headers.containsKey(TRANSLATOR_SIGNATURE);
-   }
-
+   // receive inbound messages
    private class MessageConsumer implements Processor {
 
       @Override
@@ -146,11 +115,13 @@ public class CamelMessageTranslator extends AbstractMessageTranslator {
             }
 
             message.setHeaders(exchange.getIn().getHeaders());
+            message.setHeader(FROM_HEADER, "camel:" + exchange.getFromEndpoint().getEndpointUri());
             federatedBus.processMessage(message);
          }
       }
    }
 
+   // send outbound message with headers
    private class MessageProcessor implements Processor {
 
       private final Object body;
@@ -169,4 +140,21 @@ public class CamelMessageTranslator extends AbstractMessageTranslator {
          exchange.getIn().setHeader(TRANSLATOR_SIGNATURE, true);
       }
    }
+
+   public Set<String> getInputEndpoints() {
+      return inputEndpoints;
+   }
+
+   public void setInputEndpoints(final String inputEndpoints) {
+      this.inputEndpoints = Arrays.asList(inputEndpoints.split(",")).stream().map(StringUtils::strip).collect(Collectors.toSet());
+   }
+
+   public Set<String> getOutputEndpoints() {
+      return outputEndpoints;
+   }
+
+   public void setOutputEndpoints(final String outputEndpoints) {
+      this.outputEndpoints = Arrays.asList(outputEndpoints.split(",")).stream().map(StringUtils::strip).collect(Collectors.toSet());
+   }
+
 }

@@ -23,6 +23,8 @@ import org.jboss.bus.api.CompoundContext;
 import org.jboss.bus.api.FederatedBus;
 import org.jboss.bus.api.MessageTranslator;
 
+import java.util.Map;
+
 /**
  * @author <a href="mailto:lenka@vecerovi.com">Lenka Večeřa</a>
  */
@@ -30,6 +32,10 @@ abstract public class AbstractMessageTranslator implements MessageTranslator {
 
    protected FederatedBus federatedBus;
    protected CompoundContext compoundContext;
+
+   public static boolean isSigned(final Map<String, Object> headers) {
+      return headers.containsKey(TRANSLATOR_SIGNATURE);
+   }
 
    @Override
    public void initialize(CompoundContext compoundContext) {
