@@ -45,13 +45,11 @@ public class VertxMessageTranslator extends AbstractMessageTranslator {
    private static final Logger log = LogManager.getLogger(VertxMessageTranslator.class);
 
    private Vertx vertx;
-   private Set<String> inputEndpoints;
-   private Set<String> outputEndpoints;
    private EventBus eventBus;
 
    @Override
-   public void initialize(final CompoundContext context) {
-      super.initialize(context);
+   public void initialize(final CompoundContext compoundContext) {
+      super.initialize(compoundContext);
       initVertx(compoundContext.getContext(Vertx.class));
    }
 

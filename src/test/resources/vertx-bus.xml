@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<federated xmlns="urn:federated:bus:1.0">
+   <bus class="org.jboss.bus.simple.SimpleFederatedBus">
+      <properties>
+         <property name="a" value="true" />
+      </properties>
+      <translators>
+         <translator class="org.jboss.bus.vertx.VertxMessageTranslator">
+            <properties>
+               <property name="inputEndpoints" value="inEnd" />
+               <property name="outputEndpoints" value="outEnd" />
+            </properties>
+         </translator>
+      </translators>
+   </bus>
+</federated>

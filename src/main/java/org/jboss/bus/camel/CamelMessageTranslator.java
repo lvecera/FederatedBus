@@ -23,7 +23,6 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.ProducerTemplate;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jboss.bus.api.CompoundContext;
@@ -33,14 +32,8 @@ import org.jboss.bus.api.Message;
 import org.jboss.bus.internal.AbstractMessageTranslator;
 import org.jboss.bus.internal.MessageImpl;
 
-import java.io.IOException;
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * @author <a href="mailto:lenka@vecerovi.com">Lenka Večeřa</a>
@@ -50,8 +43,6 @@ public class CamelMessageTranslator extends AbstractMessageTranslator {
    private static final Logger log = LogManager.getLogger(CamelMessageTranslator.class);
 
    private CamelContext camelContext;
-   private Set<String> inputEndpoints;
-   private Set<String> outputEndpoints;
 
    private ProducerTemplate producerTemplate;
 
@@ -140,21 +131,4 @@ public class CamelMessageTranslator extends AbstractMessageTranslator {
          exchange.getIn().setHeader(TRANSLATOR_SIGNATURE, true);
       }
    }
-
-   public Set<String> getInputEndpoints() {
-      return inputEndpoints;
-   }
-
-   public void setInputEndpoints(final String inputEndpoints) {
-      this.inputEndpoints = Arrays.asList(inputEndpoints.split(",")).stream().map(StringUtils::strip).collect(Collectors.toSet());
-   }
-
-   public Set<String> getOutputEndpoints() {
-      return outputEndpoints;
-   }
-
-   public void setOutputEndpoints(final String outputEndpoints) {
-      this.outputEndpoints = Arrays.asList(outputEndpoints.split(",")).stream().map(StringUtils::strip).collect(Collectors.toSet());
-   }
-
 }

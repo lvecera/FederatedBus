@@ -19,11 +19,15 @@
  */
 package org.jboss.bus.internal;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jboss.bus.api.CompoundContext;
 import org.jboss.bus.api.FederatedBus;
 import org.jboss.bus.api.MessageTranslator;
 
+import java.util.Arrays;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author <a href="mailto:lenka@vecerovi.com">Lenka Večeřa</a>
@@ -32,6 +36,8 @@ abstract public class AbstractMessageTranslator implements MessageTranslator {
 
    protected FederatedBus federatedBus;
    protected CompoundContext compoundContext;
+   protected Set<String> inputEndpoints;
+   protected Set<String> outputEndpoints;
 
    public static boolean isSigned(final Map<String, Object> headers) {
       return headers.containsKey(TRANSLATOR_SIGNATURE);
@@ -45,5 +51,21 @@ abstract public class AbstractMessageTranslator implements MessageTranslator {
    @Override
    public void start(FederatedBus federatedBus) {
       this.federatedBus = federatedBus;
+   }
+
+   public Set<String> getInputEndpointsAsSet() {
+      return inputEndpoints;
+   }
+
+   public void setInputEndpoints(final String inputEndpoints) {
+      this.inputEndpoints = Arrays.asList(inputEndpoints.split(",")).stream().map(StringUtils::strip).collect(Collectors.toSet());
+   }
+
+   public Set<String> getOutputEndpointsAsSet() {
+      return outputEndpoints;
+   }
+
+   public void setOutputEndpoints(final String outputEndpoints) {
+      this.outputEndpoints = Arrays.asList(outputEndpoints.split(",")).stream().map(StringUtils::strip).collect(Collectors.toSet());
    }
 }

@@ -19,6 +19,8 @@
  */
 package org.jboss.bus.config;
 
+import io.vertx.core.Vertx;
+import io.vertx.core.impl.VertxImpl;
 import org.apache.camel.CamelContext;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.logging.log4j.LogManager;
@@ -68,10 +70,14 @@ public class FederatedBusFactory {
       }
       CompoundContextImpl compoundContext = new CompoundContextImpl();
       compoundContext.putContext(CamelContext.class, camelContext);
+
+      Vertx vertx = Vertx.vertx();
+      compoundContext.putContext(Vertx.class, vertx);
+
       return compoundContext;
    }
 
-   private Federated getBusModel(final String fileName) throws FederatedBusException {
+   private static Federated getBusModel(final String fileName) throws FederatedBusException {
       try {
          final String busConfig = Files.lines(Paths.get(fileName), Charset.forName("UTF-8")).collect(Collectors.joining());
          final Source configXML = new StreamSource(new ByteArrayInputStream(busConfig.getBytes("UTF-8")));
@@ -97,7 +103,7 @@ public class FederatedBusFactory {
 
    }
 
-   private Properties parseProperties(final List<PropertyType> properties) throws FederatedBusException{
+   private static Properties parseProperties(final List<PropertyType> properties) throws FederatedBusException{
       final Properties myProps = new Properties();
 
       for(final PropertyType pt: properties) {
@@ -116,7 +122,7 @@ public class FederatedBusFactory {
       return myProps;
    }
 
-   public List<FederatedBus> loadFromXml(final String fileName, final CompoundContext compoundContext) throws FederatedBusException {
+   public static List<FederatedBus> loadFromXml(final String fileName, final CompoundContext compoundContext) throws FederatedBusException {
       final List<FederatedBus> buses = new LinkedList<>();
       final Federated federated = getBusModel(fileName);
 
@@ -139,7 +145,7 @@ public class FederatedBusFactory {
       return buses;
    }
 
-   public List<FederatedBus> loadFromXml(final String fileName) throws FederatedBusException {
+   public static List<FederatedBus> loadFromXml(final String fileName) throws FederatedBusException {
       return loadFromXml(fileName, getDefaultCompoundContext());
    }
 }
