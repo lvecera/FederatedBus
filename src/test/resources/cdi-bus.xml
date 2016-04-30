@@ -2,10 +2,10 @@
 <federated xmlns="urn:federated:bus:1.0">
    <bus class="org.jboss.bus.simple.SimpleFederatedBus">
       <translators>
-         <translator class="org.jboss.bus.vertx.VertxMessageTranslator">
+         <translator class="org.jboss.bus.cdi.CdiMessageTranslator" />
+         <translator class="org.jboss.bus.camel.CamelMessageTranslator">
             <properties>
-               <property name="inputEndpoints" value="inEnd" />
-               <property name="outputEndpoints" value="outEnd" />
+               <property name="outputEndpoints" value="direct:testCdi" />
             </properties>
          </translator>
       </translators>

@@ -89,16 +89,12 @@ public class VertxMessageTranslator extends AbstractMessageTranslator {
                   }
 
                   message.setHeader(FROM_HEADER, "vertx:" + endpoint);
+                  message.setHeader(SOURCE_HEADER, "vertx");
                   federatedBus.processMessage(message);
                }
             });
          });
       }
-   }
-
-   @Override
-   public void stop() {
-      super.stop();
    }
 
    @Override

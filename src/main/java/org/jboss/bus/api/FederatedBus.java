@@ -47,4 +47,10 @@ public interface FederatedBus {
     * Stops federated bus.
     */
    void stop();
+
+
+   CompoundContext getCompoundContext();
+
+   void setCompoundContext(CompoundContext compoundContext);
+
 }

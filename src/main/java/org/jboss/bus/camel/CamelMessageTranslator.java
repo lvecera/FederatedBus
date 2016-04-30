@@ -62,7 +62,7 @@ public class CamelMessageTranslator extends AbstractMessageTranslator {
    public void start(FederatedBus federatedBus) {
       super.start(federatedBus);
 
-      if (inputEndpoints.size() > 0) {
+      if (inputEndpoints != null && inputEndpoints.size() > 0) {
          inputEndpoints.forEach(endpoint -> {
             try {
                camelContext.getEndpoint(endpoint).createConsumer(new MessageConsumer()).start();
@@ -74,16 +74,13 @@ public class CamelMessageTranslator extends AbstractMessageTranslator {
    }
 
    @Override
-   public void stop() {
-      super.stop();
-   }
-
-   @Override
    public void sendMessage(Message message) throws FederatedBusException {
-      outputEndpoints.forEach(endpoint -> {
-         producerTemplate.asyncSend(endpoint, new MessageProcessor(message.getPayload(), message.getHeaders()));
-         log.warn("sent to {}", endpoint);
-      });
+      if (outputEndpoints != null) {
+         outputEndpoints.forEach(endpoint -> {
+            producerTemplate.asyncSend(endpoint, new MessageProcessor(message.getPayload(), message.getHeaders()));
+            log.warn("sent to {}", endpoint);
+         });
+      }
    }
 
    // receive inbound messages
@@ -107,6 +104,7 @@ public class CamelMessageTranslator extends AbstractMessageTranslator {
 
             message.setHeaders(exchange.getIn().getHeaders());
             message.setHeader(FROM_HEADER, "camel:" + exchange.getFromEndpoint().getEndpointUri());
+            message.setHeader(SOURCE_HEADER, "camel");
             federatedBus.processMessage(message);
          }
       }

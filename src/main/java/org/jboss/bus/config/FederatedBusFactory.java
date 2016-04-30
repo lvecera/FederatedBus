@@ -22,6 +22,7 @@ package org.jboss.bus.config;
 import io.vertx.core.Vertx;
 import io.vertx.core.impl.VertxImpl;
 import org.apache.camel.CamelContext;
+import org.apache.camel.ExchangeTimedOutException;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,8 +32,11 @@ import org.jboss.bus.api.FederatedBusException;
 import org.jboss.bus.api.MessageTranslator;
 import org.jboss.bus.config.model.Federated;
 import org.jboss.bus.config.model.PropertyType;
+import org.jboss.bus.internal.AbstractFederatedBus;
 import org.jboss.bus.internal.CompoundContextImpl;
 import org.jboss.bus.internal.ObjectFactory;
+import org.jboss.weld.environment.se.Weld;
+import org.jboss.weld.environment.se.WeldContainer;
 import org.w3c.dom.Element;
 
 import javax.xml.XMLConstants;
@@ -74,7 +78,28 @@ public class FederatedBusFactory {
       Vertx vertx = Vertx.vertx();
       compoundContext.putContext(Vertx.class, vertx);
 
+      WeldContainer weld = new Weld().initialize();
+      compoundContext.putContext(WeldContainer.class, weld);
+
+
       return compoundContext;
+   }
+
+   public static void shutdownBus(FederatedBus federatedBus) throws Exception {
+      WeldContainer weldContainer = federatedBus.getCompoundContext().getContext(WeldContainer.class);
+      if (weldContainer != null) {
+         weldContainer.shutdown();
+      }
+
+      CamelContext camelContext = federatedBus.getCompoundContext().getContext(CamelContext.class);
+      if (camelContext != null) {
+         camelContext.stop();
+      }
+
+      Vertx vertx = federatedBus.getCompoundContext().getContext(Vertx.class);
+      if (vertx != null) {
+         vertx.close();
+      }
    }
 
    private static Federated getBusModel(final String fileName) throws FederatedBusException {
@@ -128,12 +153,12 @@ public class FederatedBusFactory {
 
       try {
          for (Federated.Bus bus : federated.getBus()) {
-            final FederatedBus myBus = (FederatedBus) ObjectFactory.createInstance(bus.getClazz(), parseProperties(bus.getProperties().getProperty()));
+            final FederatedBus myBus = (FederatedBus) ObjectFactory.createInstance(bus.getClazz(), bus.getProperties() == null ? new Properties() : parseProperties(bus.getProperties().getProperty()));
+            myBus.setCompoundContext(compoundContext);
 
             for (Federated.Bus.Translators.Translator trans : bus.getTranslators().getTranslator()) {
-               final MessageTranslator myTrans = (MessageTranslator) ObjectFactory.createInstance(trans.getClazz(), parseProperties(trans.getProperties().getProperty()));
+               final MessageTranslator myTrans = (MessageTranslator) ObjectFactory.createInstance(trans.getClazz(), trans.getProperties() == null ? new Properties() : parseProperties(trans.getProperties().getProperty()));
                myBus.registerTranslator(myTrans);
-               myTrans.initialize(compoundContext);
             }
 
             buses.add(myBus);

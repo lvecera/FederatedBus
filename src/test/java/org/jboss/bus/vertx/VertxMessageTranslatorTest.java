@@ -48,6 +48,9 @@ public class VertxMessageTranslatorTest {
       Assert.assertEquals(message1.headers().get("myHeader"), "myValue");
       Assert.assertEquals(message1.headers().get(MessageTranslator.TRANSLATOR_SIGNATURE), "true");
       Assert.assertEquals(message1.headers().get(MessageTranslator.FROM_HEADER), "vertx:inEnd");
+
+      federatedBus.stop();
+      FederatedBusFactory.shutdownBus(federatedBus);
    }
 
 }

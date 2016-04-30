@@ -19,6 +19,7 @@
  */
 package org.jboss.bus.internal;
 
+import org.jboss.bus.api.CompoundContext;
 import org.jboss.bus.api.FederatedBus;
 import org.jboss.bus.api.MessageTranslator;
 
@@ -33,10 +34,13 @@ import java.util.function.Consumer;
  */
 abstract public class AbstractFederatedBus implements FederatedBus {
 
+   CompoundContext compoundContext;
+
    protected Set<MessageTranslator> messageTranslators = new HashSet<MessageTranslator>();
 
    public void registerTranslator(final MessageTranslator messageTranslator) {
       messageTranslators.add(messageTranslator);
+      messageTranslator.initialize(compoundContext);
    }
 
    public void start() {
@@ -46,4 +50,13 @@ abstract public class AbstractFederatedBus implements FederatedBus {
    public void stop() {
       messageTranslators.forEach(MessageTranslator::stop);
    }
+
+   public CompoundContext getCompoundContext() {
+      return compoundContext;
+   }
+
+   public void setCompoundContext(CompoundContext compoundContext) {
+      this.compoundContext = compoundContext;
+   }
+
 }
