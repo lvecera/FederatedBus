@@ -16,6 +16,7 @@
       <version.vertx.core>3.2.1</version.vertx.core>
       <version.weld>2.3.2.Final</version.weld>
       <version.ejb.api>3.0</version.ejb.api>
+      <version.drools>6.4.0.Final</version.drools>
    </properties>
 
    <dependencies>
@@ -69,6 +70,16 @@
          <groupId>javax.ejb</groupId>
          <artifactId>ejb-api</artifactId>
          <version>${version.ejb.api}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.drools</groupId>
+         <artifactId>drools-core</artifactId>
+         <version>${version.drools}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.drools</groupId>
+         <artifactId>drools-compiler</artifactId>
+         <version>${version.drools}</version>
       </dependency>
    </dependencies>
 

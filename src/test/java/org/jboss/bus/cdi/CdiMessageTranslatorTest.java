@@ -4,8 +4,6 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.Message;
 import org.jboss.bus.api.CompoundContext;
 import org.jboss.bus.api.FederatedBus;
-import org.jboss.bus.api.MessageTranslator;
-import org.jboss.bus.camel.CamelMessageTranslator;
 import org.jboss.bus.config.FederatedBusFactory;
 import org.jboss.bus.config.FederatedBusFactoryTest;
 import org.jboss.bus.internal.AbstractMessageTranslator;
@@ -16,8 +14,6 @@ import org.testng.annotations.Test;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-
-import static org.testng.Assert.*;
 
 /**
  * @author <a href="mailto:lenka@vecerovi.com">Lenka Večeřa</a>
@@ -34,7 +30,7 @@ public class CdiMessageTranslatorTest {
 
       final List<Message> results = Collections.synchronizedList(new LinkedList<>());
 
-      context.getContext(CamelContext.class).getEndpoint("direct://testCdi").createConsumer(exchange -> results.add(exchange.getIn())).start();
+      context.getContext(CamelContext.class).getEndpoint("direct:testCdi").createConsumer(exchange -> results.add(exchange.getIn())).start();
 
       context.getContext(WeldContainer.class).event().fire("myMessageFromCdi");
 
@@ -42,11 +38,11 @@ public class CdiMessageTranslatorTest {
 
       Assert.assertTrue(AbstractMessageTranslator.isSigned(results.get(0).getHeaders()));
       Assert.assertEquals(results.get(0).getBody().toString(), "myMessageFromCdi");
-      Assert.assertEquals(results.get(0).getHeader(MessageTranslator.FROM_HEADER), "cdi:java.lang.String");
-      Assert.assertEquals(results.get(0).getHeader(MessageTranslator.SOURCE_HEADER), "cdi");
+      Assert.assertEquals(results.get(0).getHeader(org.jboss.bus.api.Message.FROM_HEADER), "cdi:java.lang.String");
+      Assert.assertEquals(results.get(0).getHeader(org.jboss.bus.api.Message.SOURCE_HEADER), "cdi");
 
       federatedBus.stop();
-      FederatedBusFactory.shutdownBus(federatedBus);
+      FederatedBusFactory.shutdownContext(federatedBus.getCompoundContext());
    }
 
 }

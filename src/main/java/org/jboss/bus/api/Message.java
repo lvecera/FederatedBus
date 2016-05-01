@@ -28,12 +28,15 @@ import java.util.Properties;
  */
 public interface Message extends Serializable {
 
+   String FROM_HEADER = "federated.bus.from";
+   String SOURCE_HEADER = "federated.bus.source";
+
    /**
     * Gets message properties.
     *
     * @return Message properties.
     */
-   public Properties getProperties();
+   Properties getProperties();
 
    /**
     * Sets message properties.
@@ -41,7 +44,7 @@ public interface Message extends Serializable {
     * @param properties
     *       Message properties.
     */
-   public void setProperties(final Properties properties);
+   void setProperties(final Properties properties);
 
    /**
     * Gets a message property.
@@ -50,7 +53,7 @@ public interface Message extends Serializable {
     *       Name of the property.
     * @return The value of the property.
     */
-   public String getProperty(final String name);
+   String getProperty(final String name);
 
    /**
     * Gets a message property, returning a default value when the property is not set.
@@ -61,7 +64,7 @@ public interface Message extends Serializable {
     *       The value to be returned when the property is not set.
     * @return The value of the property.
     */
-   public String getProperty(final String name, final String defaultValue);
+   String getProperty(final String name, final String defaultValue);
 
    /**
     * Sets a message property.
@@ -71,14 +74,14 @@ public interface Message extends Serializable {
     * @param value
     *       A new value of the property.
     */
-   public void setProperty(final String name, final String value);
+   void setProperty(final String name, final String value);
 
    /**
     * Gets the message payload.
     *
     * @return The message payload.
     */
-   public Serializable getPayload();
+   Serializable getPayload();
 
    /**
     * Sets the message payload.
@@ -86,7 +89,7 @@ public interface Message extends Serializable {
     * @param payload
     *       The message payload.
     */
-   public void setPayload(final Serializable payload);
+   void setPayload(final Serializable payload);
 
    /**
     * Sets the message headers.
@@ -94,14 +97,14 @@ public interface Message extends Serializable {
     * @param headers
     *       The message headers.
     */
-   public void setHeaders(final Map<String, Object> headers);
+   void setHeaders(final Map<String, Object> headers);
 
    /**
     * Gets the message headers.
     *
     * @return The message headers.
     */
-   public Map<String, Object> getHeaders();
+   Map<String, Object> getHeaders();
 
    /**
     * Sets a message header.
@@ -111,7 +114,7 @@ public interface Message extends Serializable {
     * @param value
     *       A new header value.
     */
-   public void setHeader(final String name, final Object value);
+   void setHeader(final String name, final Object value);
 
    /**
     * Gets a message header.
@@ -120,7 +123,7 @@ public interface Message extends Serializable {
     *       The header name.
     * @return The header value.
     */
-   public Object getHeader(final String name);
+   Object getHeader(final String name);
 
    /**
     * Gets a message header, returning a default value when the property is not set.
@@ -131,5 +134,5 @@ public interface Message extends Serializable {
     *       The value to be returned when the header is not set.
     * @return The value of the property.
     */
-   public Object getHeader(final String name, final Object defaultValue);
+   Object getHeader(final String name, final Object defaultValue);
 }

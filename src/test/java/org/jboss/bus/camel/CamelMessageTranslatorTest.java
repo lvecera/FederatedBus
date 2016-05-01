@@ -5,7 +5,6 @@ import org.apache.camel.Message;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.impl.DefaultCamelContext;
-import org.jboss.bus.api.MessageTranslator;
 import org.jboss.bus.config.FederatedBusFactory;
 import org.jboss.bus.internal.AbstractMessageTranslator;
 import org.jboss.bus.internal.CompoundContextImpl;
@@ -61,29 +60,29 @@ public class CamelMessageTranslatorTest {
       Assert.assertTrue(AbstractMessageTranslator.isSigned(results3.get(0).getHeaders()));
       Assert.assertEquals(results3.get(0).getBody().toString(), "hello");
 
-      Assert.assertEquals(results3.get(0).getHeader(MessageTranslator.FROM_HEADER), "camel:direct://test1");
-      Assert.assertEquals(results3.get(0).getHeader(MessageTranslator.SOURCE_HEADER), "camel");
+      Assert.assertEquals(results3.get(0).getHeader(org.jboss.bus.api.Message.FROM_HEADER), "camel:direct://test1");
+      Assert.assertEquals(results3.get(0).getHeader(org.jboss.bus.api.Message.SOURCE_HEADER), "camel");
 
       Assert.assertTrue(AbstractMessageTranslator.isSigned(results4.get(0).getHeaders()));
       Assert.assertEquals(results4.get(0).getBody().toString(), "hello");
 
-      Assert.assertEquals(results4.get(0).getHeader(MessageTranslator.FROM_HEADER), "camel:direct://test1");
-      Assert.assertEquals(results4.get(0).getHeader(MessageTranslator.SOURCE_HEADER), "camel");
+      Assert.assertEquals(results4.get(0).getHeader(org.jboss.bus.api.Message.FROM_HEADER), "camel:direct://test1");
+      Assert.assertEquals(results4.get(0).getHeader(org.jboss.bus.api.Message.SOURCE_HEADER), "camel");
 
       Assert.assertTrue(AbstractMessageTranslator.isSigned(results3.get(1).getHeaders()));
       Assert.assertEquals(results3.get(1).getBody().toString(), "hi!");
 
-      Assert.assertEquals(results3.get(1).getHeader(MessageTranslator.FROM_HEADER), "camel:direct://test2");
-      Assert.assertEquals(results3.get(1).getHeader(MessageTranslator.SOURCE_HEADER), "camel");
+      Assert.assertEquals(results3.get(1).getHeader(org.jboss.bus.api.Message.FROM_HEADER), "camel:direct://test2");
+      Assert.assertEquals(results3.get(1).getHeader(org.jboss.bus.api.Message.SOURCE_HEADER), "camel");
 
       Assert.assertTrue(AbstractMessageTranslator.isSigned(results4.get(1).getHeaders()));
       Assert.assertEquals(results4.get(1).getBody().toString(), "hi!");
 
-      Assert.assertEquals(results4.get(1).getHeader(MessageTranslator.FROM_HEADER), "camel:direct://test2");
-      Assert.assertEquals(results4.get(1).getHeader(MessageTranslator.SOURCE_HEADER), "camel");
+      Assert.assertEquals(results4.get(1).getHeader(org.jboss.bus.api.Message.FROM_HEADER), "camel:direct://test2");
+      Assert.assertEquals(results4.get(1).getHeader(org.jboss.bus.api.Message.SOURCE_HEADER), "camel");
 
       federatedBus.stop();
-      FederatedBusFactory.shutdownBus(federatedBus);
+      FederatedBusFactory.shutdownContext(federatedBus.getCompoundContext());
    }
 
    private static class TestCamelRoutes extends RouteBuilder {

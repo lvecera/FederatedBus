@@ -77,4 +77,9 @@ public class DummyMessageTranslator extends AbstractMessageTranslator {
    public void setProp2(String prop2) {
       this.prop2 = prop2;
    }
+
+   @Override
+   public String getName() {
+      return "dummy";
+   }
 }

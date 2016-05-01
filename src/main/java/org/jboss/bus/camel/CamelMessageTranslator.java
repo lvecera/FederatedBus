@@ -46,6 +46,10 @@ public class CamelMessageTranslator extends AbstractMessageTranslator {
 
    private ProducerTemplate producerTemplate;
 
+   public CamelMessageTranslator() {
+      name = "camel";
+   }
+
    @Override
    public void initialize(CompoundContext compoundContext) {
       super.initialize(compoundContext);
@@ -103,8 +107,8 @@ public class CamelMessageTranslator extends AbstractMessageTranslator {
             }
 
             message.setHeaders(exchange.getIn().getHeaders());
-            message.setHeader(FROM_HEADER, "camel:" + exchange.getFromEndpoint().getEndpointUri());
-            message.setHeader(SOURCE_HEADER, "camel");
+            message.setHeader(Message.FROM_HEADER, getName() + ":" + exchange.getFromEndpoint().getEndpointUri());
+            message.setHeader(Message.SOURCE_HEADER, getName());
             federatedBus.processMessage(message);
          }
       }

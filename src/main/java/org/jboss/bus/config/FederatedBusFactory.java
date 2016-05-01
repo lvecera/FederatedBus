@@ -85,23 +85,6 @@ public class FederatedBusFactory {
       return compoundContext;
    }
 
-   public static void shutdownBus(FederatedBus federatedBus) throws Exception {
-      WeldContainer weldContainer = federatedBus.getCompoundContext().getContext(WeldContainer.class);
-      if (weldContainer != null) {
-         weldContainer.shutdown();
-      }
-
-      CamelContext camelContext = federatedBus.getCompoundContext().getContext(CamelContext.class);
-      if (camelContext != null) {
-         camelContext.stop();
-      }
-
-      Vertx vertx = federatedBus.getCompoundContext().getContext(Vertx.class);
-      if (vertx != null) {
-         vertx.close();
-      }
-   }
-
    private static Federated getBusModel(final String fileName) throws FederatedBusException {
       try {
          final String busConfig = Files.lines(Paths.get(fileName), Charset.forName("UTF-8")).collect(Collectors.joining());
@@ -172,5 +155,27 @@ public class FederatedBusFactory {
 
    public static List<FederatedBus> loadFromXml(final String fileName) throws FederatedBusException {
       return loadFromXml(fileName, getDefaultCompoundContext());
+   }
+
+   public static void shutdownContext(CompoundContext compoundContext) {
+      WeldContainer weldContainer = compoundContext.getContext(WeldContainer.class);
+      if (weldContainer != null) {
+         weldContainer.shutdown();
+      }
+
+      CamelContext camelContext = compoundContext.getContext(CamelContext.class);
+      if (camelContext != null) {
+         try {
+            camelContext.stop();
+         } catch (Exception e) {
+            log.warn("Unable to shutdown Camel smoothly: ", e);
+         }
+      }
+
+      Vertx vertx = compoundContext.getContext(Vertx.class);
+      if (vertx != null) {
+         vertx.close();
+      }
+
    }
 }

@@ -1,0 +1,23 @@
+package org.jboss.bus
+
+import org.jboss.bus.api.Message
+
+declare Message
+   @expires( 10m )
+   @role( event )
+end
+
+rule "Process message camel -> camel2"
+when
+  $message: Message(headers[Message.SOURCE_HEADER] == "camel") from entry-point "inbound"
+then
+  channels["camel2"].send($message);
+end
+
+rule "Process message camel2 -> camel"
+when
+  $message: Message(headers[Message.SOURCE_HEADER] == "camel2") from entry-point "inbound"
+then
+  $message.setPayload("Hello " + $message.getPayload());
+  channels["camel"].send($message);
+end

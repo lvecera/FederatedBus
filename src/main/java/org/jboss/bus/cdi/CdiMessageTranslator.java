@@ -30,7 +30,6 @@ import org.jboss.bus.internal.MessageImpl;
 import org.jboss.weld.environment.se.WeldContainer;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -48,6 +47,10 @@ public class CdiMessageTranslator extends AbstractMessageTranslator {
 
    protected static List<CdiMessageTranslator> instances = new ArrayList<>();
    protected List<Object> processedEvents = Collections.synchronizedList(new ArrayList<>());
+
+   public CdiMessageTranslator() {
+      name = "cdi";
+   }
 
    @Override
    public void initialize(final CompoundContext compoundContext) {
@@ -90,8 +93,8 @@ public class CdiMessageTranslator extends AbstractMessageTranslator {
             log.debug("Processing message: {}", payload.toString());
          }
 
-         message.setHeader(FROM_HEADER, "cdi:" + payload.getClass().getCanonicalName());
-         message.setHeader(SOURCE_HEADER, "cdi");
+         message.setHeader(Message.FROM_HEADER, getName() + ":" + payload.getClass().getCanonicalName());
+         message.setHeader(Message.SOURCE_HEADER, getName());
          federatedBus.processMessage(message);
       }
    }

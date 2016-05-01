@@ -1,0 +1,15 @@
+package org.jboss.bus
+
+import org.jboss.bus.api.Message
+
+declare Message
+   @expires( 10m )
+   @role( event )
+end
+
+rule "Process message"
+when
+  $message: Message() from entry-point "inbound"
+then
+  channels["outbound"].send($message);
+end

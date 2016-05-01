@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<federated xmlns="urn:federated:bus:1.0">
+   <bus class="org.jboss.bus.drools.DroolsFederatedBus">
+      <properties>
+         <property name="rules" value="/drools1.drl" />
+      </properties>
+      <translators>
+         <translator class="org.jboss.bus.camel.CamelMessageTranslator">
+            <properties>
+               <property name="inputEndpoints" value="direct:inTest" />
+               <property name="outputEndpoints" value="direct:outTest" />
+            </properties>
+         </translator>
+         <translator class="org.jboss.bus.camel.CamelMessageTranslator">
+            <properties>
+               <property name="name" value="camel2" />
+               <property name="inputEndpoints" value="direct:inTest2" />
+               <property name="outputEndpoints" value="direct:outTest2" />
+            </properties>
+         </translator>
+      </translators>
+   </bus>
+</federated>

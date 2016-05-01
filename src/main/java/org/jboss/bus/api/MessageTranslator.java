@@ -24,13 +24,11 @@ package org.jboss.bus.api;
  */
 public interface MessageTranslator {
 
-   String FROM_HEADER = "federated.bus.from";
-   String SOURCE_HEADER = "federated.bus.source";
-
    String TRANSLATOR_SIGNATURE = "federated.bus.processed";
 
    /**
     * Initialize message translator with given compound context
+    *
     * @param compoundContext
     */
    void initialize(final CompoundContext compoundContext);
@@ -55,4 +53,18 @@ public interface MessageTranslator {
     * @throws FederatedBusException
     */
    void sendMessage(final Message message) throws FederatedBusException;
+
+   /**
+    * Gets the name of this translator which is later used in message headers to identify the source of the message.
+    *
+    * @return The translator's name.
+    */
+   String getName();
+
+   /**
+    * Sets the name of this translator which is later used in message headers to identify the source of the message.
+    *
+    * @param name The translator's name.
+    */
+   void setName(final String name);
 }

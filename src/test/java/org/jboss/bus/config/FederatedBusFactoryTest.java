@@ -37,8 +37,7 @@ public class FederatedBusFactoryTest {
    public void testFederatedBusFactory() throws FederatedBusException {
 
       FederatedBusFactory factory = new FederatedBusFactory();
-      List<FederatedBus> buses = new LinkedList<>();
-      buses = factory.loadFromXml(FederatedBusFactoryTest.class.getResource("/dummy-bus.xml").getPath());
+      List<FederatedBus> buses = factory.loadFromXml(FederatedBusFactoryTest.class.getResource("/dummy-bus.xml").getPath());
 
       Assert.assertEquals(buses.size(), 1);
       Assert.assertTrue(buses.get(0) instanceof DummyFederatedBus);
@@ -50,6 +49,7 @@ public class FederatedBusFactoryTest {
       Assert.assertEquals(translator.getProp1(), Integer.valueOf(123));
       Assert.assertEquals(translator.getProp2(), "[hello: null]");
 
+      FederatedBusFactory.shutdownContext(dummyBus.getCompoundContext());
    }
 
 }

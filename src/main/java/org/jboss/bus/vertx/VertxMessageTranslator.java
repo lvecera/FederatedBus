@@ -35,7 +35,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @author <a href="mailto:lenka@vecerovi.com">Lenka Večeřa</a>
@@ -46,6 +45,10 @@ public class VertxMessageTranslator extends AbstractMessageTranslator {
 
    private Vertx vertx;
    private EventBus eventBus;
+
+   public VertxMessageTranslator() {
+      name = "vertx";
+   }
 
    @Override
    public void initialize(final CompoundContext compoundContext) {
@@ -88,8 +91,8 @@ public class VertxMessageTranslator extends AbstractMessageTranslator {
                      message.setPayload(body.toString());
                   }
 
-                  message.setHeader(FROM_HEADER, "vertx:" + endpoint);
-                  message.setHeader(SOURCE_HEADER, "vertx");
+                  message.setHeader(Message.FROM_HEADER, getName() + ":" + endpoint);
+                  message.setHeader(Message.SOURCE_HEADER, getName());
                   federatedBus.processMessage(message);
                }
             });

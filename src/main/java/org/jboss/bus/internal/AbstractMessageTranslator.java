@@ -38,6 +38,7 @@ abstract public class AbstractMessageTranslator implements MessageTranslator {
    protected CompoundContext compoundContext;
    protected Set<String> inputEndpoints;
    protected Set<String> outputEndpoints;
+   protected String name = "abstract";
 
    public static boolean isSigned(final Map<String, Object> headers) {
       return headers.containsKey(TRANSLATOR_SIGNATURE);
@@ -67,5 +68,15 @@ abstract public class AbstractMessageTranslator implements MessageTranslator {
 
    public void setOutputEndpoints(final String outputEndpoints) {
       this.outputEndpoints = Arrays.asList(outputEndpoints.split(",")).stream().map(StringUtils::strip).collect(Collectors.toSet());
+   }
+
+   @Override
+   public String getName() {
+      return name;
+   }
+
+   @Override
+   public void setName(String name) {
+      this.name = name;
    }
 }
