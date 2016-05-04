@@ -17,6 +17,9 @@
       <version.weld>2.3.2.Final</version.weld>
       <version.ejb.api>3.0</version.ejb.api>
       <version.drools>6.4.0.Final</version.drools>
+
+      <version.findbugs>3.0.3</version.findbugs>
+      <version.jacoco>0.7.6.201602180812</version.jacoco>
    </properties>
 
    <dependencies>
@@ -81,6 +84,13 @@
          <artifactId>drools-compiler</artifactId>
          <version>${version.drools}</version>
       </dependency>
+
+      <dependency>
+         <groupId>org.apache.camel</groupId>
+         <artifactId>camel-jetty</artifactId>
+         <version>${version.camel}</version>
+         <scope>test</scope>
+      </dependency>
    </dependencies>
 
    <build>
@@ -94,7 +104,62 @@
                <target>1.8</target>
             </configuration>
          </plugin>
+         <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>${version.jacoco}</version>
+            <configuration>
+               <destFile>${basedir}/target/coverage-reports/jacoco-unit.exec</destFile>
+               <dataFile>${basedir}/target/coverage-reports/jacoco-unit.exec</dataFile>
+               <includes>
+                  <include>org/jboss/bus/**</include>
+               </includes>
+               <excludes>
+                  <exclude>org/jboss/bus/config/model/**</exclude>
+               </excludes>
+            </configuration>
+            <executions>
+               <execution>
+                  <id>jacoco-initialize</id>
+                  <goals>
+                     <goal>prepare-agent</goal>
+                  </goals>
+               </execution>
+               <execution>
+                  <id>jacoco-site</id>
+                  <phase>package</phase>
+                  <goals>
+                     <goal>report</goal>
+                  </goals>
+               </execution>
+            </executions>
+         </plugin>
+
       </plugins>
    </build>
+
+   <reporting>
+      <plugins>
+         <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>findbugs-maven-plugin</artifactId>
+            <version>${version.findbugs}</version>
+         </plugin>
+         <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>${version.jacoco}</version>
+            <configuration>
+               <includes>
+                  <include>org/jboss/bus/**</include>
+               </includes>
+               <excludes>
+                  <exclude>org/jboss/bus/config/model/**</exclude>
+               </excludes>
+            </configuration>
+         </plugin>
+      </plugins>
+   </reporting>
+
 
 </project>
