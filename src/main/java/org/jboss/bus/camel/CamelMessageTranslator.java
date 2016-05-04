@@ -2,7 +2,7 @@
  * -----------------------------------------------------------------------\
  * FederatedBus
  *  
- * Copyright (C) 2014 - 2016 the original author or authors.
+ * Copyright (C) 2015 - 2016 the original author or authors.
  *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,7 +61,6 @@ public class CamelMessageTranslator extends AbstractMessageTranslator {
 
    @Override
    public void initialize(CompoundContext compoundContext) {
-      super.initialize(compoundContext);
       initCamel(compoundContext.getContext(CamelContext.class));
    }
 
@@ -95,7 +94,9 @@ public class CamelMessageTranslator extends AbstractMessageTranslator {
       if (outputEndpoints != null) {
          outputEndpoints.forEach(endpoint -> {
             producerTemplate.asyncSend(endpoint, new MessageProcessor(message.getPayload(), message.getHeaders()));
-            log.warn("sent to {}", endpoint);
+            if (log.isDebugEnabled()) {
+               log.debug("Sent to {}", endpoint);
+            }
          });
       }
    }
@@ -132,13 +133,13 @@ public class CamelMessageTranslator extends AbstractMessageTranslator {
    /**
     * Send outbound message with headers.
     */
-   private class MessageProcessor implements Processor {
+   private static class MessageProcessor implements Processor {
 
       private final Object body;
       private final Map<String, Object> headers;
 
 
-      public MessageProcessor(final Object body, final Map<String, Object> headers) {
+      MessageProcessor(final Object body, final Map<String, Object> headers) {
          this.body = body;
          this.headers = headers;
       }

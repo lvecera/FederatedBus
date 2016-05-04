@@ -2,7 +2,7 @@
  * -----------------------------------------------------------------------\
  * FederatedBus
  *  
- * Copyright (C) 2014 - 2016 the original author or authors.
+ * Copyright (C) 2015 - 2016 the original author or authors.
  *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@
  */
 package org.jboss.bus.simple;
 
+import org.jboss.bus.api.CompoundContext;
 import org.jboss.bus.api.FederatedBusException;
 import org.jboss.bus.api.Message;
 import org.jboss.bus.internal.AbstractMessageTranslator;
@@ -40,7 +41,12 @@ public class DummyMessageTranslator extends AbstractMessageTranslator {
 
    private List<Message> messageStore = new LinkedList<>();
 
-   public static final String PROCESS_SET_FLAG = "federated.bus.processed_flag";
+   private static final String PROCESS_SET_FLAG = "federated.bus.processed_flag";
+
+   @Override
+   public void initialize(final CompoundContext compoundContext) {
+      // nop
+   }
 
    @Override
    public void sendMessage(Message message) throws FederatedBusException {

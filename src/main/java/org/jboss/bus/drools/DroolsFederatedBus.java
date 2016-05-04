@@ -2,7 +2,7 @@
  * -----------------------------------------------------------------------\
  * FederatedBus
  *  
- * Copyright (C) 2014 - 2016 the original author or authors.
+ * Copyright (C) 2015 - 2016 the original author or authors.
  *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,10 +57,13 @@ public class DroolsFederatedBus extends AbstractFederatedBus {
    private KieSession kieSession;
    private EntryPoint inbound;
 
-   private final ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
+   private ThreadPoolExecutor executor;
+
+   private int threadPoolSize = 10;
 
    @Override
    public void start() {
+      executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(threadPoolSize);
       try {
          final KieServices kieServices = KieServices.Factory.get();
 
@@ -166,5 +169,13 @@ public class DroolsFederatedBus extends AbstractFederatedBus {
    public void processMessage(Message message) {
       inbound.insert(message);
       kieSession.fireAllRules();
+   }
+
+   public int getThreadPoolSize() {
+      return threadPoolSize;
+   }
+
+   public void setThreadPoolSize(final int threadPoolSize) {
+      this.threadPoolSize = threadPoolSize;
    }
 }

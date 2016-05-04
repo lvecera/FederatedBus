@@ -2,7 +2,7 @@
  * -----------------------------------------------------------------------\
  * FederatedBus
  *  
- * Copyright (C) 2014 - 2016 the original author or authors.
+ * Copyright (C) 2015 - 2016 the original author or authors.
  *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,9 @@ public class SimpleFederatedBus extends AbstractFederatedBus {
 
    private static final Logger log = LogManager.getLogger(SimpleFederatedBus.class);
 
-   private final ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
+   private ThreadPoolExecutor executor;
+
+   private int threadPoolSize = 10;
 
    public void processMessage(final Message message) {
       messageTranslators.forEach(messageTranslator ->
@@ -54,14 +56,23 @@ public class SimpleFederatedBus extends AbstractFederatedBus {
 
    @Override
    public void start() {
+      executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(threadPoolSize);
       super.start();
+
       log.info("Simple federated bus started!");
    }
 
    @Override
    public void stop() {
-      executor.shutdown();
       super.stop();
+      executor.shutdown();
    }
 
+   public int getThreadPoolSize() {
+      return threadPoolSize;
+   }
+
+   public void setThreadPoolSize(final int threadPoolSize) {
+      this.threadPoolSize = threadPoolSize;
+   }
 }

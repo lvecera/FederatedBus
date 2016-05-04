@@ -2,7 +2,7 @@
  * -----------------------------------------------------------------------\
  * FederatedBus
  *  
- * Copyright (C) 2014 - 2016 the original author or authors.
+ * Copyright (C) 2015 - 2016 the original author or authors.
  *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,6 @@ import org.jboss.bus.api.Message;
 import org.jboss.bus.api.MessageTranslator;
 import org.jboss.bus.internal.AbstractFederatedBus;
 
-import java.util.Properties;
 import java.util.Set;
 
 /**

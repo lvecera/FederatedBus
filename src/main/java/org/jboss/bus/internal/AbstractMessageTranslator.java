@@ -2,7 +2,7 @@
  * -----------------------------------------------------------------------\
  * FederatedBus
  *  
- * Copyright (C) 2014 - 2016 the original author or authors.
+ * Copyright (C) 2015 - 2016 the original author or authors.
  *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,18 +35,12 @@ import java.util.stream.Collectors;
 abstract public class AbstractMessageTranslator implements MessageTranslator {
 
    protected FederatedBus federatedBus;
-   protected CompoundContext compoundContext;
    protected Set<String> inputEndpoints;
    protected Set<String> outputEndpoints;
    protected String name = "abstract";
 
    public static boolean isSigned(final Map<String, Object> headers) {
       return headers.containsKey(TRANSLATOR_SIGNATURE);
-   }
-
-   @Override
-   public void initialize(CompoundContext compoundContext) {
-      this.compoundContext = compoundContext;
    }
 
    @Override

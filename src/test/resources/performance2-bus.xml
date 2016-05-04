@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<federated xmlns="urn:federated:bus:1.0">
+   <bus class="org.jboss.bus.drools.DroolsFederatedBus">
+      <properties>
+         <property name="rules" value="/default.drl" />
+         <property name="threadPoolSize" value="100" />
+      </properties>
+      <translators>
+         <translator class="org.jboss.bus.camel.CamelMessageTranslator">
+            <properties>
+               <property name="inputEndpoints" value="direct:inTest" />
+               <property name="outputEndpoints" value="direct:outTest" />
+            </properties>
+         </translator>
+      </translators>
+   </bus>
+</federated>

@@ -2,7 +2,7 @@
  * -----------------------------------------------------------------------\
  * FederatedBus
  *  
- * Copyright (C) 2014 - 2016 the original author or authors.
+ * Copyright (C) 2015 - 2016 the original author or authors.
  *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ public class CompoundContextImpl implements CompoundContext {
    private Map<String, Object> contexts = new HashMap<>();
 
    @Override
+   @SuppressWarnings("unchecked")
    public <T> T getContext(final Class<T> clazz) {
       return (T) contexts.get(clazz.getCanonicalName());
    }

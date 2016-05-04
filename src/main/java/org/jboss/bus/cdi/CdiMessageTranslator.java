@@ -2,7 +2,7 @@
  * -----------------------------------------------------------------------\
  * FederatedBus
  *  
- * Copyright (C) 2014 - 2016 the original author or authors.
+ * Copyright (C) 2015 - 2016 the original author or authors.
  *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,12 +54,12 @@ public class CdiMessageTranslator extends AbstractMessageTranslator {
    /**
     * List of CDI message translator instances. Used to store instances.
     */
-   protected static List<CdiMessageTranslator> instances = new ArrayList<>();
+   private static final List<CdiMessageTranslator> instances = new ArrayList<>();
 
    /**
     * List of processed events. Used to store already processed events so they are not processed again.
     */
-   protected List<Object> processedEvents = Collections.synchronizedList(new ArrayList<>());
+   private List<Object> processedEvents = Collections.synchronizedList(new ArrayList<>());
 
    public CdiMessageTranslator() {
       name = "cdi";
@@ -67,7 +67,6 @@ public class CdiMessageTranslator extends AbstractMessageTranslator {
 
    @Override
    public void initialize(final CompoundContext compoundContext) {
-      super.initialize(compoundContext);
       initCdi(compoundContext.getContext(WeldContainer.class));
    }
 
@@ -102,7 +101,7 @@ public class CdiMessageTranslator extends AbstractMessageTranslator {
     * Otherwise it creates message with headers and forwards it to the bus.
     * @param event
     */
-   public void processEvent(Object event) {
+   private void processEvent(Object event) {
       final Serializable payload = event instanceof Serializable ? (Serializable) event : event.toString();
 
       if (processedEvents.contains(payload)) {
