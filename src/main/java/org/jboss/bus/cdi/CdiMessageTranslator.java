@@ -41,11 +41,24 @@ import java.util.List;
  */
 public class CdiMessageTranslator extends AbstractMessageTranslator {
 
+   /**
+    * Logger for this class.
+    */
    private static final Logger log = LogManager.getLogger(CdiMessageTranslator.class);
 
+   /**
+    * New CDI container, used to fire events.
+    */
    private WeldContainer weld;
 
+   /**
+    * List of CDI message translator instances. Used to store instances.
+    */
    protected static List<CdiMessageTranslator> instances = new ArrayList<>();
+
+   /**
+    * List of processed events. Used to store already processed events so they are not processed again.
+    */
    protected List<Object> processedEvents = Collections.synchronizedList(new ArrayList<>());
 
    public CdiMessageTranslator() {
@@ -58,6 +71,10 @@ public class CdiMessageTranslator extends AbstractMessageTranslator {
       initCdi(compoundContext.getContext(WeldContainer.class));
    }
 
+   /**
+    * Initialization of CDI. Sets weld container.
+    * @param weld This value is used for setting Weld container.
+    */
    private void initCdi(final WeldContainer weld) {
       this.weld = weld;
    }
@@ -80,11 +97,15 @@ public class CdiMessageTranslator extends AbstractMessageTranslator {
       weld.event().fire(message.getPayload());
    }
 
+   /**
+    * Processing event. If incoming event has been already processed, it is removed.
+    * Otherwise it creates message with headers and forwards it to the bus.
+    * @param event
+    */
    public void processEvent(Object event) {
       final Serializable payload = event instanceof Serializable ? (Serializable) event : event.toString();
 
       if (processedEvents.contains(payload)) {
-         log.info("remove **************************** " + event.toString());
          processedEvents.remove(payload);
       } else {
          final Message message = new MessageImpl(payload);;

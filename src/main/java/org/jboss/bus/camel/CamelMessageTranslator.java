@@ -40,10 +40,19 @@ import java.util.Map;
  */
 public class CamelMessageTranslator extends AbstractMessageTranslator {
 
+   /**
+    * Logger for this class.
+    */
    private static final Logger log = LogManager.getLogger(CamelMessageTranslator.class);
 
+   /**
+    * Camel context is used for sending and receiving messages - message exchange.
+    */
    private CamelContext camelContext;
 
+   /**
+    * Producer template sed for sending messages.
+    */
    private ProducerTemplate producerTemplate;
 
    public CamelMessageTranslator() {
@@ -56,6 +65,10 @@ public class CamelMessageTranslator extends AbstractMessageTranslator {
       initCamel(compoundContext.getContext(CamelContext.class));
    }
 
+   /**
+    * Initialize camel with given camel context.
+    * @param camelContext Camel context used for initialization.
+    */
    private void initCamel(CamelContext camelContext) {
       this.camelContext = camelContext;
 
@@ -87,7 +100,9 @@ public class CamelMessageTranslator extends AbstractMessageTranslator {
       }
    }
 
-   // receive inbound messages
+   /**
+    * Receive inbound messages.
+    */
    private class MessageConsumer implements Processor {
 
       @Override
@@ -114,7 +129,9 @@ public class CamelMessageTranslator extends AbstractMessageTranslator {
       }
    }
 
-   // send outbound message with headers
+   /**
+    * Send outbound message with headers.
+    */
    private class MessageProcessor implements Processor {
 
       private final Object body;

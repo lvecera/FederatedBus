@@ -63,8 +63,15 @@ import java.util.stream.Collectors;
  */
 public class FederatedBusFactory {
 
+   /**
+    * Logger for this class.
+    */
    private static final Logger log = LogManager.getLogger(FederatedBusFactory.class);
 
+   /**
+    * Gets default compound context.
+    * @return Compound context that contains Camel context, Vertx or Weld container.
+    */
    public static CompoundContext getDefaultCompoundContext() {
       CamelContext camelContext = new DefaultCamelContext();
       try {
@@ -85,6 +92,12 @@ public class FederatedBusFactory {
       return compoundContext;
    }
 
+   /**
+    * Gets model of bus based on XML file.
+    * @param fileName Name of the XML file containing the bus description.
+    * @return Federated
+    * @throws FederatedBusException It throws this exception when XML configuration cannot be validated.
+    */
    private static Federated getBusModel(final String fileName) throws FederatedBusException {
       try {
          final String busConfig = Files.lines(Paths.get(fileName), Charset.forName("UTF-8")).collect(Collectors.joining());
@@ -92,11 +105,6 @@ public class FederatedBusFactory {
          final String schemaFileName = "federated-bus.xsd";
 
          URL configXsdUrl = FederatedBusFactory.class.getResource("/" + schemaFileName);
-
-         InputStream test = configXsdUrl.openStream();
-         //noinspection ResultOfMethodCallIgnored
-         test.read(); // there always is a byte
-         test.close(); // we do not need finally for this as we could not have failed
 
          final SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
          final Schema schema = schemaFactory.newSchema(configXsdUrl);
@@ -111,6 +119,12 @@ public class FederatedBusFactory {
 
    }
 
+   /**
+    * Parses properties.
+    * @param properties List of properties that are parsed.
+    * @return Parsed properties.
+    * @throws FederatedBusException This exception is thrown when property tag has no attribute value nor body set.
+    */
    private static Properties parseProperties(final List<PropertyType> properties) throws FederatedBusException{
       final Properties myProps = new Properties();
 
@@ -130,6 +144,13 @@ public class FederatedBusFactory {
       return myProps;
    }
 
+   /**
+    * Loading from XML. This method nitializes federated bus with given context.
+    * @param fileName The name of the XML file.
+    * @param compoundContext Compound context that is used for initialization.
+    * @return List of buses that are described in the XML file.
+    * @throws FederatedBusException Throws exception when loading from the XML is not successful.
+    */
    public static List<FederatedBus> loadFromXml(final String fileName, final CompoundContext compoundContext) throws FederatedBusException {
       final List<FederatedBus> buses = new LinkedList<>();
       final Federated federated = getBusModel(fileName);
@@ -153,10 +174,20 @@ public class FederatedBusFactory {
       return buses;
    }
 
+   /**
+    * Loading from XML file and initialization of federated bus with default compound context.
+    * @param fileName The name of the XML file.
+    * @return List of buses that are described in the XML file.
+    * @throws FederatedBusException Throws exception when loading from the XML is not successful.
+    */
    public static List<FederatedBus> loadFromXml(final String fileName) throws FederatedBusException {
       return loadFromXml(fileName, getDefaultCompoundContext());
    }
 
+   /**
+    * Shuts down the compound context.
+    * @param compoundContext Context that is about to be shut down.
+    */
    public static void shutdownContext(CompoundContext compoundContext) {
       WeldContainer weldContainer = compoundContext.getContext(WeldContainer.class);
       if (weldContainer != null) {

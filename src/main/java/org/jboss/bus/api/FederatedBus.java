@@ -48,9 +48,16 @@ public interface FederatedBus {
     */
    void stop();
 
-
+   /**
+    * Gets compound context.
+    * @return Compound context.
+    */
    CompoundContext getCompoundContext();
 
+   /**
+    * Sets compound context.
+    * @param compoundContext A new compound context that will be set.
+    */
    void setCompoundContext(CompoundContext compoundContext);
 
 }

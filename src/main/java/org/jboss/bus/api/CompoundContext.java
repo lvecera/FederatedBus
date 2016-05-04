@@ -23,6 +23,11 @@ package org.jboss.bus.api;
  * @author <a href="mailto:lenka@vecerovi.com">Lenka Večeřa</a>
  */
 public interface CompoundContext {
-
+   /**
+    * Gets context of a requested type.
+    * @param clazz Class type of a context to be retured.
+    * @param <T> Context class type.
+    * @return Given context instance.
+    */
    <T> T getContext(final Class<T> clazz);
 }

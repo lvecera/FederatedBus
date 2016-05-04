@@ -139,6 +139,11 @@ public class DroolsFederatedBus extends AbstractFederatedBus {
       return rulesPath;
    }
 
+   /**
+    * Calls send message on translator.
+    * @param translator Message translator that is used for sending message.
+    * @param message Message that will be sent.
+    */
    private void sendOutbound(final MessageTranslator translator, final Message message) {
       CompletableFuture.runAsync(() -> {
          try {
@@ -149,6 +154,10 @@ public class DroolsFederatedBus extends AbstractFederatedBus {
       }, executor);
    }
 
+   /**
+    * Calls send message on every registered message translator.
+    * @param message Message that will be sent.
+    */
    private void sendOutbound(final Message message) {
       messageTranslators.forEach(messageTranslator -> sendOutbound(messageTranslator, message));
    }
