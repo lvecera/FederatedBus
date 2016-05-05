@@ -51,14 +51,34 @@ import java.util.concurrent.ThreadPoolExecutor;
  */
 public class DroolsFederatedBus extends AbstractFederatedBus {
 
+   /**
+    * Logger for this class.
+    */
    private static final Logger log = LogManager.getLogger(DroolsFederatedBus.class);
 
+   /**
+    * Name of rules file.
+    */
    private String rules;
+
+   /**
+    * Allows to establish an iterative conversation with the engine.
+    */
    private KieSession kieSession;
+
+   /**
+    * Abstract channel through which data are inserted into the engine.
+    */
    private EntryPoint inbound;
 
+   /**
+    * Allows to execute submitted task using several pooled threads.
+    */
    private ThreadPoolExecutor executor;
 
+   /**
+    * Initial value of thread pool size set to 10.
+    */
    private int threadPoolSize = 10;
 
    @Override
@@ -114,14 +134,26 @@ public class DroolsFederatedBus extends AbstractFederatedBus {
       kieSession.dispose();
    }
 
+   /**
+    * Gets the name of the rules file.
+    * @return String with rules file name.
+    */
    public String getRules() {
       return rules;
    }
 
+   /**
+    * Sets the name of the rules file.
+    * @param rules New name of rules file.
+    */
    public void setRules(String rules) {
       this.rules = rules;
    }
 
+   /**
+    * Gets path to rules.
+    * @return Path to rules.
+    */
    private Path getRulesPath() {
       Path rulesPath = null;
 
@@ -171,10 +203,18 @@ public class DroolsFederatedBus extends AbstractFederatedBus {
       kieSession.fireAllRules();
    }
 
+   /**
+    * Gets the size of thread pool.
+    * @return Size of thread pool.
+    */
    public int getThreadPoolSize() {
       return threadPoolSize;
    }
 
+   /**
+    * Sets the size of thread pool to given value.
+    * @param threadPoolSize New value of thread pool size.
+    */
    public void setThreadPoolSize(final int threadPoolSize) {
       this.threadPoolSize = threadPoolSize;
    }

@@ -34,27 +34,38 @@ import java.util.function.Consumer;
  */
 abstract public class AbstractFederatedBus implements FederatedBus {
 
+   /**
+    * Compound context for this federated bus.
+    */
    CompoundContext compoundContext;
 
+   /**
+    * Set of registered message translators.
+    */
    protected Set<MessageTranslator> messageTranslators = new HashSet<MessageTranslator>();
 
+   @Override
    public void registerTranslator(final MessageTranslator messageTranslator) {
       messageTranslators.add(messageTranslator);
       messageTranslator.initialize(compoundContext);
    }
 
+   @Override
    public void start() {
       messageTranslators.forEach(messageTranslator -> messageTranslator.start(this));
    }
 
+   @Override
    public void stop() {
       messageTranslators.forEach(MessageTranslator::stop);
    }
 
+   @Override
    public CompoundContext getCompoundContext() {
       return compoundContext;
    }
 
+   @Override
    public void setCompoundContext(CompoundContext compoundContext) {
       this.compoundContext = compoundContext;
    }

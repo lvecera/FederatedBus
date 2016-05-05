@@ -34,11 +34,32 @@ import java.util.stream.Collectors;
  */
 abstract public class AbstractMessageTranslator implements MessageTranslator {
 
+   /**
+    * Federated bus to which message translator will be registered.
+    */
    protected FederatedBus federatedBus;
+
+   /**
+    * Set of input enpoints.
+    */
    protected Set<String> inputEndpoints;
+
+   /**
+    * Set of output endpoints.
+    */
    protected Set<String> outputEndpoints;
+
+   /**
+    * Name of this message translator.
+    */
    protected String name = "abstract";
 
+   /**
+    * Tells if message contains a signature of the message translator
+    * so the message is not sent to translator that it came from.
+    * @param headers
+    * @return
+    */
    public static boolean isSigned(final Map<String, Object> headers) {
       return headers.containsKey(TRANSLATOR_SIGNATURE);
    }
@@ -48,18 +69,34 @@ abstract public class AbstractMessageTranslator implements MessageTranslator {
       this.federatedBus = federatedBus;
    }
 
+   /**
+    * Gets input endpoints as set.
+    * @return Set of input endpoints.
+    */
    public Set<String> getInputEndpointsAsSet() {
       return inputEndpoints;
    }
 
+   /**
+    * Sets input endpoints.
+    * @param inputEndpoints Input endpoints separated by ",".
+    */
    public void setInputEndpoints(final String inputEndpoints) {
       this.inputEndpoints = Arrays.asList(inputEndpoints.split(",")).stream().map(StringUtils::strip).collect(Collectors.toSet());
    }
 
+   /**
+    * Gets output endpoints as set.
+    * @return Set of output endpoints.
+    */
    public Set<String> getOutputEndpointsAsSet() {
       return outputEndpoints;
    }
 
+   /**
+    * Sets output endpoints.
+    * @param outputEndpoints Output endpoints separated by ",".
+    */
    public void setOutputEndpoints(final String outputEndpoints) {
       this.outputEndpoints = Arrays.asList(outputEndpoints.split(",")).stream().map(StringUtils::strip).collect(Collectors.toSet());
    }

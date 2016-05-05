@@ -41,9 +41,19 @@ import java.util.Map;
  */
 public class VertxMessageTranslator extends AbstractMessageTranslator {
 
+   /**
+    * Logger for this class.
+    */
    private static final Logger log = LogManager.getLogger(VertxMessageTranslator.class);
 
+   /**
+    * Instance of Vertx.
+    */
    private Vertx vertx;
+
+   /**
+    * Instance of event bus.
+    */
    private EventBus eventBus;
 
    public VertxMessageTranslator() {
@@ -55,6 +65,10 @@ public class VertxMessageTranslator extends AbstractMessageTranslator {
       initVertx(compoundContext.getContext(Vertx.class));
    }
 
+   /**
+    * Initialize vertx.
+    * @param vertx Vertx instance.
+    */
    private void initVertx(final Vertx vertx) {
       this.vertx = vertx;
    }

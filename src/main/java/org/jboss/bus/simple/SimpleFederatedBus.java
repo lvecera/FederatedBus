@@ -35,12 +35,22 @@ import java.util.concurrent.TimeUnit;
  */
 public class SimpleFederatedBus extends AbstractFederatedBus {
 
+   /**
+    * Logger for this class.
+    */
    private static final Logger log = LogManager.getLogger(SimpleFederatedBus.class);
 
+   /**
+    * Allows to execute submitted task using several pooled threads.
+    */
    private ThreadPoolExecutor executor;
 
+   /**
+    * Initial value of thread pool size set to 10.
+    */
    private int threadPoolSize = 10;
 
+   @Override
    public void processMessage(final Message message) {
       messageTranslators.forEach(messageTranslator ->
             CompletableFuture.runAsync(() -> {
@@ -68,10 +78,18 @@ public class SimpleFederatedBus extends AbstractFederatedBus {
       executor.shutdown();
    }
 
+   /**
+    * Gets the size of thread pool.
+    * @return Size of thread pool.
+    */
    public int getThreadPoolSize() {
       return threadPoolSize;
    }
 
+   /**
+    * Sets the size of thread pool to given value.
+    * @param threadPoolSize New value of thread pool size.
+    */
    public void setThreadPoolSize(final int threadPoolSize) {
       this.threadPoolSize = threadPoolSize;
    }
