@@ -20,6 +20,8 @@
 package org.jboss.bus.api;
 
 /**
+ * Generic exception thrown by the federated bus. Typically encapsulates other I/O exceptions.
+ *
  * @author <a href="mailto:lenka@vecerovi.com">Lenka Večeřa</a>
  */
 public class FederatedBusException extends Exception {
@@ -29,13 +31,11 @@ public class FederatedBusException extends Exception {
    /**
     * Defaults to {@link java.lang.Exception#Exception(String, Throwable)}.
     *
-    * @param message
-    *        The detailed message. The detailed message is saved for
-    *        later retrieval by the {@link #getMessage()} method.
-    * @param cause
-    *        The cause (which is saved for later retrieval by the {@link #getCause()} method). (A <tt>null</tt> value is
-    *        permitted, and indicates that the cause is nonexistent or
-    *        unknown.)
+    * @param message The detailed message. The detailed message is saved for
+    *                later retrieval by the {@link #getMessage()} method.
+    * @param cause   The cause (which is saved for later retrieval by the {@link #getCause()} method). (A <tt>null</tt> value is
+    *                permitted, and indicates that the cause is nonexistent or
+    *                unknown.)
     * @see java.lang.Exception#Exception(String, Throwable)
     */
    public FederatedBusException(final String message, final Throwable cause) {
@@ -45,10 +45,9 @@ public class FederatedBusException extends Exception {
    /**
     * Defaults to {@link java.lang.Exception#Exception(Throwable)}.
     *
-    * @param cause
-    *        The cause (which is saved for later retrieval by the {@link #getCause()} method). (A <tt>null</tt> value is
-    *        permitted, and indicates that the cause is nonexistent or
-    *        unknown.)
+    * @param cause The cause (which is saved for later retrieval by the {@link #getCause()} method). (A <tt>null</tt> value is
+    *              permitted, and indicates that the cause is nonexistent or
+    *              unknown.)
     * @see java.lang.Exception#Exception(Throwable)
     */
    public FederatedBusException(final Throwable cause) {
@@ -58,9 +57,8 @@ public class FederatedBusException extends Exception {
    /**
     * Defaults to {@link java.lang.Exception#Exception(String)}.
     *
-    * @param message
-    *        The detailed message. The detailed message is saved for
-    *        later retrieval by the {@link #getMessage()} method.
+    * @param message The detailed message. The detailed message is saved for
+    *                later retrieval by the {@link #getMessage()} method.
     * @see java.lang.Exception#Exception(String)
     */
    public FederatedBusException(final String message) {

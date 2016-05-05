@@ -19,6 +19,7 @@
  */
 package org.jboss.bus.performance;
 
+import io.vertx.core.Vertx;
 import org.apache.camel.CamelContext;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.logging.log4j.LogManager;
@@ -30,20 +31,13 @@ import org.jboss.bus.config.FederatedBusFactoryTest;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.testng.annotations.Test;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Scanner;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
-import io.vertx.core.Vertx;
 
 /**
  * @author <a href="mailto:lenka@vecerovi.com">Lenka Večeřa</a>
  */
+@Test(enabled = false)
 public class PerformanceTests {
 
    private static final Logger log = LogManager.getLogger(PerformanceTests.class);
@@ -139,7 +133,7 @@ public class PerformanceTests {
       FederatedBusFactory.shutdownContext(federatedBus.getCompoundContext());
    }
 
-   private void promptEnterKey(){
+   private void promptEnterKey() {
       Scanner scanner = new Scanner(System.in);
       scanner.nextLine();
    }

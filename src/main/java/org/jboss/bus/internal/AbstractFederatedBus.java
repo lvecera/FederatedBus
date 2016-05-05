@@ -23,13 +23,13 @@ import org.jboss.bus.api.CompoundContext;
 import org.jboss.bus.api.FederatedBus;
 import org.jboss.bus.api.MessageTranslator;
 
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
-import java.util.function.Consumer;
 
 /**
+ * Common functionality of all federated buses. Handles translator registry and compound context manipulation.
+ * Simplifies further federated bus development.
+ *
  * @author <a href="mailto:lenka@vecerovi.com">Lenka Večeřa</a>
  */
 abstract public class AbstractFederatedBus implements FederatedBus {
@@ -42,7 +42,7 @@ abstract public class AbstractFederatedBus implements FederatedBus {
    /**
     * Set of registered message translators.
     */
-   protected Set<MessageTranslator> messageTranslators = new HashSet<MessageTranslator>();
+   protected Set<MessageTranslator> messageTranslators = new HashSet<>();
 
    @Override
    public void registerTranslator(final MessageTranslator messageTranslator) {

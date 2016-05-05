@@ -47,6 +47,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
+ * Federated bus based on Drools rules system that drives message forwarding.
+ *
  * @author <a href="mailto:lenka@vecerovi.com">Lenka Večeřa</a>
  */
 public class DroolsFederatedBus extends AbstractFederatedBus {
@@ -57,7 +59,7 @@ public class DroolsFederatedBus extends AbstractFederatedBus {
    private static final Logger log = LogManager.getLogger(DroolsFederatedBus.class);
 
    /**
-    * Name of rules file.
+    * Name of the rules file or resource.
     */
    private String rules;
 
@@ -72,12 +74,12 @@ public class DroolsFederatedBus extends AbstractFederatedBus {
    private EntryPoint inbound;
 
    /**
-    * Allows to execute submitted task using several pooled threads.
+    * Allows to execute submitted task using a thread pool.
     */
    private ThreadPoolExecutor executor;
 
    /**
-    * Initial value of thread pool size set to 10.
+    * Size of the thread pool.
     */
    private int threadPoolSize = 10;
 
@@ -136,7 +138,8 @@ public class DroolsFederatedBus extends AbstractFederatedBus {
 
    /**
     * Gets the name of the rules file.
-    * @return String with rules file name.
+    *
+    * @return The rules file name.
     */
    public String getRules() {
       return rules;
@@ -144,15 +147,17 @@ public class DroolsFederatedBus extends AbstractFederatedBus {
 
    /**
     * Sets the name of the rules file.
-    * @param rules New name of rules file.
+    *
+    * @param rules The name of the rules file.
     */
    public void setRules(String rules) {
       this.rules = rules;
    }
 
    /**
-    * Gets path to rules.
-    * @return Path to rules.
+    * Gets the path to rules.
+    *
+    * @return The path to rules.
     */
    private Path getRulesPath() {
       Path rulesPath = null;
@@ -175,9 +180,10 @@ public class DroolsFederatedBus extends AbstractFederatedBus {
    }
 
    /**
-    * Calls send message on translator.
-    * @param translator Message translator that is used for sending message.
-    * @param message Message that will be sent.
+    * Asynchronously sends the outbound message using the given message translator.
+    *
+    * @param translator The message translator that is used for sending message.
+    * @param message    The message that will be sent.
     */
    private void sendOutbound(final MessageTranslator translator, final Message message) {
       CompletableFuture.runAsync(() -> {
@@ -190,8 +196,9 @@ public class DroolsFederatedBus extends AbstractFederatedBus {
    }
 
    /**
-    * Calls send message on every registered message translator.
-    * @param message Message that will be sent.
+    * Sends the outbound message through all registered message translators.
+    *
+    * @param message The message to be sent.
     */
    private void sendOutbound(final Message message) {
       messageTranslators.forEach(messageTranslator -> sendOutbound(messageTranslator, message));
@@ -204,16 +211,18 @@ public class DroolsFederatedBus extends AbstractFederatedBus {
    }
 
    /**
-    * Gets the size of thread pool.
-    * @return Size of thread pool.
+    * Gets the size of the thread pool.
+    *
+    * @return Size of the thread pool.
     */
    public int getThreadPoolSize() {
       return threadPoolSize;
    }
 
    /**
-    * Sets the size of thread pool to given value.
-    * @param threadPoolSize New value of thread pool size.
+    * Sets the size of the thread pool.
+    *
+    * @param threadPoolSize The size of the thread pool.
     */
    public void setThreadPoolSize(final int threadPoolSize) {
       this.threadPoolSize = threadPoolSize;

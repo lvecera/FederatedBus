@@ -20,6 +20,8 @@
 package org.jboss.bus.api;
 
 /**
+ * An interface between an actual event driven system and the federated bus.
+ *
  * @author <a href="mailto:lenka@vecerovi.com">Lenka Večeřa</a>
  */
 public interface MessageTranslator {
@@ -27,30 +29,30 @@ public interface MessageTranslator {
    String TRANSLATOR_SIGNATURE = "federated.bus.processed";
 
    /**
-    * Initialize message translator with given compound context
+    * Initializes the message translator with the given compound context.
     *
-    * @param compoundContext
+    * @param compoundContext The compound context.
     */
    void initialize(final CompoundContext compoundContext);
 
    /**
-    * Starts message translator.
+    * Starts the message translator.
     *
-    * @param federatedBus that starting the message translator
+    * @param federatedBus Federated bus starting the message translator
     */
    void start(final FederatedBus federatedBus);
 
    /**
-    * Stops message translator.
+    * Stops the message translator.
     */
    default void stop() {
    }
 
    /**
-    * Used by federated bus to publish message to channel used by this message translator.
+    * Used by the federated bus to publish message to a channel served by this message translator.
     *
-    * @param message
-    * @throws FederatedBusException
+    * @param message The message to be distributed.
+    * @throws FederatedBusException When it was not possible to deliver the message.
     */
    void sendMessage(final Message message) throws FederatedBusException;
 

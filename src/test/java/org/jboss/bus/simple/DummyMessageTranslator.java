@@ -64,7 +64,7 @@ public class DummyMessageTranslator extends AbstractMessageTranslator {
       return Collections.unmodifiableList(messageStore);
    }
 
-   public void setProp2AsEmelent(final Element element){
+   public void setProp2AsEmelent(final Element element) {
       this.prop2 = element.getNodeValue();
    }
 

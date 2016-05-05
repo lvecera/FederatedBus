@@ -28,9 +28,10 @@ import org.jboss.bus.internal.AbstractFederatedBus;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
+ * Simplest federated bus that just forwards all inbound messages to all outbound translators.
+ *
  * @author <a href="mailto:lenka@vecerovi.com">Lenka Večeřa</a>
  */
 public class SimpleFederatedBus extends AbstractFederatedBus {
@@ -41,12 +42,12 @@ public class SimpleFederatedBus extends AbstractFederatedBus {
    private static final Logger log = LogManager.getLogger(SimpleFederatedBus.class);
 
    /**
-    * Allows to execute submitted task using several pooled threads.
+    * Allows to execute submitted tasks using a thread pool.
     */
    private ThreadPoolExecutor executor;
 
    /**
-    * Initial value of thread pool size set to 10.
+    * Size of the thread pool.
     */
    private int threadPoolSize = 10;
 
@@ -79,16 +80,18 @@ public class SimpleFederatedBus extends AbstractFederatedBus {
    }
 
    /**
-    * Gets the size of thread pool.
-    * @return Size of thread pool.
+    * Gets the size of the thread pool.
+    *
+    * @return Size of the thread pool.
     */
    public int getThreadPoolSize() {
       return threadPoolSize;
    }
 
    /**
-    * Sets the size of thread pool to given value.
-    * @param threadPoolSize New value of thread pool size.
+    * Sets the size of the thread pool to given value.
+    *
+    * @param threadPoolSize The new size of the thread pool.
     */
    public void setThreadPoolSize(final int threadPoolSize) {
       this.threadPoolSize = threadPoolSize;

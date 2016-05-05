@@ -24,33 +24,41 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
+ * Message used carry data on the federated bus. The messages and events of all connected systems need to be translated
+ * to/from this message format.
+ *
  * @author <a href="mailto:lenka@vecerovi.com">Lenka Večeřa</a>
  */
 public interface Message extends Serializable {
 
+   /**
+    * Name of the header carrying the address of the message source system and its part (i.g. queue, event bus...).
+    */
    String FROM_HEADER = "federated.bus.from";
+
+   /**
+    * Name of the header carrying the symbolic name of the source system from which the message comes.
+    */
    String SOURCE_HEADER = "federated.bus.source";
 
    /**
-    * Gets message properties.
+    * Gets the message properties.
     *
     * @return Message properties.
     */
    Properties getProperties();
 
    /**
-    * Sets message properties.
+    * Sets the message properties.
     *
-    * @param properties
-    *       Message properties.
+    * @param properties Message properties.
     */
    void setProperties(final Properties properties);
 
    /**
     * Gets a message property.
     *
-    * @param name
-    *       Name of the property.
+    * @param name Name of the property.
     * @return The value of the property.
     */
    String getProperty(final String name);
@@ -58,10 +66,8 @@ public interface Message extends Serializable {
    /**
     * Gets a message property, returning a default value when the property is not set.
     *
-    * @param name
-    *       Name of the property.
-    * @param defaultValue
-    *       The value to be returned when the property is not set.
+    * @param name         Name of the property.
+    * @param defaultValue The value to be returned when the property is not set.
     * @return The value of the property.
     */
    String getProperty(final String name, final String defaultValue);
@@ -69,10 +75,8 @@ public interface Message extends Serializable {
    /**
     * Sets a message property.
     *
-    * @param name
-    *       Name of the property.
-    * @param value
-    *       A new value of the property.
+    * @param name  Name of the property.
+    * @param value A new value of the property.
     */
    void setProperty(final String name, final String value);
 
@@ -86,16 +90,14 @@ public interface Message extends Serializable {
    /**
     * Sets the message payload.
     *
-    * @param payload
-    *       The message payload.
+    * @param payload The message payload.
     */
    void setPayload(final Serializable payload);
 
    /**
     * Sets the message headers.
     *
-    * @param headers
-    *       The message headers.
+    * @param headers The message headers.
     */
    void setHeaders(final Map<String, Object> headers);
 
@@ -109,18 +111,15 @@ public interface Message extends Serializable {
    /**
     * Sets a message header.
     *
-    * @param name
-    *       The header name.
-    * @param value
-    *       A new header value.
+    * @param name  The header name.
+    * @param value A new header value.
     */
    void setHeader(final String name, final Object value);
 
    /**
     * Gets a message header.
     *
-    * @param name
-    *       The header name.
+    * @param name The header name.
     * @return The header value.
     */
    Object getHeader(final String name);
@@ -128,10 +127,8 @@ public interface Message extends Serializable {
    /**
     * Gets a message header, returning a default value when the property is not set.
     *
-    * @param name
-    *       Name of the header.
-    * @param defaultValue
-    *       The value to be returned when the header is not set.
+    * @param name         Name of the header.
+    * @param defaultValue The value to be returned when the header is not set.
     * @return The value of the property.
     */
    Object getHeader(final String name, final Object defaultValue);

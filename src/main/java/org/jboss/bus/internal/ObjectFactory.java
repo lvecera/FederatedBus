@@ -33,6 +33,8 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
+ * Can create instances of objects dynamically using class names and properties.
+ *
  * @author <a href="mailto:lenka@vecerovi.com">Lenka Večeřa</a>
  */
 public class ObjectFactory {
@@ -43,30 +45,20 @@ public class ObjectFactory {
    private static final Logger log = LogManager.getLogger(ObjectFactory.class);
 
    /**
-    * Cached plugin class loader.
-    */
-   private static ClassLoader pluginClassLoader = null;
-
-   /**
-    * There should be no instance of a utility class.
+    * No instance of this class is allowed.
     */
    private ObjectFactory() {
    }
 
    /**
-    * Looks up for a set method on a bean that is able to accept Element
+    * Tries to store an element in an object property if such a setter exists.
     *
-    * @param object
-    *       The object on which we search for the setter.
-    * @param propertyName
-    *       Name of the property of type Element.
-    * @param value
-    *       Value to be set to the property.
-    * @return <code>true</code> if operation has succeeded, <code>false</code> otherwise
-    * @throws InvocationTargetException
-    *       When it was not possible to call the setter on the object.
-    * @throws IllegalAccessException
-    *       When we did not have the correct rights to set any of the properties.
+    * @param object       The object on which the value should be set.
+    * @param propertyName Name of the property.
+    * @param value        Value to be set to the property.
+    * @return True if and only if the operation succeeded.
+    * @throws InvocationTargetException When it was not possible to call the setter on the object.
+    * @throws IllegalAccessException    When we did not have the rights to set the property.
     */
    private static boolean setElementProperty(final Object object, final String propertyName, final Element value) throws InvocationTargetException, IllegalAccessException {
       try {
@@ -82,14 +74,10 @@ public class ObjectFactory {
    /**
     * Sets the attributes of an object according to the properties provided.
     *
-    * @param object
-    *       Object on which the properties should be set.
-    * @param properties
-    *       Properties that should be set as properties of the object. Key is a name of an object property and value is its value.
-    * @throws InvocationTargetException
-    *       When it was not possible to call the setter on the object.
-    * @throws IllegalAccessException
-    *       When we did not have the correct rights to set any of the properties.
+    * @param object     Object on which the properties should be set.
+    * @param properties Properties that should be set as properties of the object. Key is a name of an object property and value is its value.
+    * @throws InvocationTargetException When it was not possible to call the setter on the object.
+    * @throws IllegalAccessException    When we did not have the correct rights to set any of the properties.
     */
    public static void setPropertiesOnObject(final Object object, final Properties properties) throws IllegalAccessException, InvocationTargetException {
       final PropertyUtilsBean propertyUtilsBean = new PropertyUtilsBean();
@@ -120,19 +108,13 @@ public class ObjectFactory {
    /**
     * Creates an instance of the given class and configures its properties.
     *
-    * @param className
-    *       Name of the class to be constructed.
-    * @param properties
-    *       Properties to be configured on the class instance.
+    * @param className  Name of the class to be constructed.
+    * @param properties Properties to be configured on the class instance.
     * @return Configured class instance.
-    * @throws InstantiationException
-    *       When it was not possible to create the object instance.
-    * @throws IllegalAccessException
-    *       When we did not have correct rights to create the object or set any of its properties.
-    * @throws ClassNotFoundException
-    *       When the given class does not exists.
-    * @throws InvocationTargetException
-    *       When it was not possible to call any of the properties setters.
+    * @throws InstantiationException    When it was not possible to create the object instance.
+    * @throws IllegalAccessException    When we did not have correct rights to create the object or set any of its properties.
+    * @throws ClassNotFoundException    When the given class does not exists.
+    * @throws InvocationTargetException When it was not possible to call any of the properties setters.
     */
    public static Object createInstance(final String className, final Properties properties) throws InstantiationException, IllegalAccessException, ClassNotFoundException, InvocationTargetException {
       if (log.isTraceEnabled()) {
@@ -148,8 +130,7 @@ public class ObjectFactory {
    /**
     * Converts camelCaseStringsWithACRONYMS to CAMEL_CASE_STRINGS_WITH_ACRONYMS
     *
-    * @param camelCase
-    *       The camelCase string.
+    * @param camelCase The camelCase string.
     * @return The same string in equivalent format for Java enum values.
     */
    public static String camelCaseToEnum(final String camelCase) {
@@ -160,7 +141,7 @@ public class ObjectFactory {
    }
 
    private static class EnumConvertUtilsBean extends ConvertUtilsBean {
-      @SuppressWarnings({ "rawtypes", "unchecked" })
+      @SuppressWarnings({"rawtypes", "unchecked"})
       @Override
       public Object convert(final String value, final Class clazz) {
          if (clazz.isEnum()) {

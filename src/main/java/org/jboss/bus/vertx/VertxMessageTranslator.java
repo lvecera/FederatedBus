@@ -37,6 +37,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Message translator which connects to Vert.x.
+ *
  * @author <a href="mailto:lenka@vecerovi.com">Lenka Večeřa</a>
  */
 public class VertxMessageTranslator extends AbstractMessageTranslator {
@@ -47,15 +49,18 @@ public class VertxMessageTranslator extends AbstractMessageTranslator {
    private static final Logger log = LogManager.getLogger(VertxMessageTranslator.class);
 
    /**
-    * Instance of Vertx.
+    * Instance of Vertx - the system context.
     */
    private Vertx vertx;
 
    /**
-    * Instance of event bus.
+    * Event used for message exchange in Vert.x.
     */
    private EventBus eventBus;
 
+   /**
+    * Sets the default name of the translator.
+    */
    public VertxMessageTranslator() {
       name = "vertx";
    }
@@ -66,8 +71,8 @@ public class VertxMessageTranslator extends AbstractMessageTranslator {
    }
 
    /**
-    * Initialize vertx.
-    * @param vertx Vertx instance.
+    * Initializes Vert.x.
+    * @param vertx Vert.x instance.
     */
    private void initVertx(final Vertx vertx) {
       this.vertx = vertx;

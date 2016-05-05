@@ -20,6 +20,7 @@
 package org.jboss.bus.internal;
 
 import org.jboss.bus.api.Message;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,146 +52,76 @@ public class MessageImpl implements Message {
     * Creates an empty message.
     */
    public MessageImpl() {
-      this.headers = new HashMap<String, Object>();
+      this.headers = new HashMap<>();
       this.properties = new Properties();
    }
 
    /**
     * Creates a message with the given payload.
     *
-    * @param payload
-    *       Message payload.
+    * @param payload Message payload.
     */
    public MessageImpl(final Serializable payload) {
       this();
       this.payload = payload;
    }
 
-   /**
-    * Gets message properties.
-    *
-    * @return Message properties.
-    */
+   @Override
    public Properties getProperties() {
       return properties;
    }
 
-   /**
-    * Sets message properties.
-    *
-    * @param properties
-    *       Message properties.
-    */
+   @Override
    public void setProperties(final Properties properties) {
       this.properties = properties;
    }
 
-   /**
-    * Gets a message property.
-    *
-    * @param name
-    *       Name of the property.
-    * @return The value of the property.
-    */
+   @Override
    public String getProperty(final String name) {
       return properties.getProperty(name);
    }
 
-   /**
-    * Gets a message property, returning a default value when the property is not set.
-    *
-    * @param name
-    *       Name of the property.
-    * @param defaultValue
-    *       The value to be returned when the property is not set.
-    * @return The value of the property.
-    */
+   @Override
    public String getProperty(final String name, final String defaultValue) {
       return properties.getProperty(name, defaultValue);
    }
 
-   /**
-    * Sets a message property.
-    *
-    * @param name
-    *       Name of the property.
-    * @param value
-    *       A new value of the property.
-    */
+   @Override
    public void setProperty(final String name, final String value) {
       properties.setProperty(name, value);
    }
 
-   /**
-    * Gets the message payload.
-    *
-    * @return The message payload.
-    */
+   @Override
    public Serializable getPayload() {
       return payload;
    }
 
-   /**
-    * Sets the message payload.
-    *
-    * @param payload
-    *       The message payload.
-    */
+   @Override
    public void setPayload(final Serializable payload) {
       this.payload = payload;
    }
 
-   /**
-    * Sets the message headers.
-    *
-    * @param headers
-    *       The message headers.
-    */
+   @Override
    public void setHeaders(final Map<String, Object> headers) {
       this.headers = headers;
    }
 
-   /**
-    * Gets the message headers.
-    *
-    * @return The message headers.
-    */
+   @Override
    public Map<String, Object> getHeaders() {
       return headers;
    }
 
-   /**
-    * Sets a message header.
-    *
-    * @param name
-    *       The header name.
-    * @param value
-    *       A new header value.
-    */
+   @Override
    public void setHeader(final String name, final Object value) {
       headers.put(name, value);
    }
 
-   /**
-    * Gets a message header.
-    *
-    * @param name
-    *       The header name.
-    * @return The header value.
-    */
+   @Override
    public Object getHeader(final String name) {
       return headers.get(name);
    }
 
-   /**
-    * Gets a message header, returning a default value when the property is not set.
-    *
-    * @param name
-    *       Name of the header.
-    * @param defaultValue
-    *       The value to be returned when the header is not set.
-    * @return The value of the property.
-    */
+   @Override
    public Object getHeader(final String name, final Object defaultValue) {
       return headers.getOrDefault(name, defaultValue);
    }

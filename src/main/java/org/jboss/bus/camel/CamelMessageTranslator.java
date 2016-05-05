@@ -36,6 +36,8 @@ import java.io.Serializable;
 import java.util.Map;
 
 /**
+ * Message translator which connects to Apache Camel.
+ *
  * @author <a href="mailto:lenka@vecerovi.com">Lenka Večeřa</a>
  */
 public class CamelMessageTranslator extends AbstractMessageTranslator {
@@ -51,10 +53,13 @@ public class CamelMessageTranslator extends AbstractMessageTranslator {
    private CamelContext camelContext;
 
    /**
-    * Producer template sed for sending messages.
+    * Producer template used for sending messages.
     */
    private ProducerTemplate producerTemplate;
 
+   /**
+    * Sets the default name of the translator.
+    */
    public CamelMessageTranslator() {
       name = "camel";
    }
@@ -65,7 +70,8 @@ public class CamelMessageTranslator extends AbstractMessageTranslator {
    }
 
    /**
-    * Initialize camel with given camel context.
+    * Initializes camel with the given camel context.
+    *
     * @param camelContext Camel context used for initialization.
     */
    private void initCamel(CamelContext camelContext) {
@@ -102,7 +108,7 @@ public class CamelMessageTranslator extends AbstractMessageTranslator {
    }
 
    /**
-    * Receive inbound messages.
+    * Receiver of inbound messages.
     */
    private class MessageConsumer implements Processor {
 
@@ -131,7 +137,7 @@ public class CamelMessageTranslator extends AbstractMessageTranslator {
    }
 
    /**
-    * Send outbound message with headers.
+    * Sender of outbound messages (including their headers).
     */
    private static class MessageProcessor implements Processor {
 

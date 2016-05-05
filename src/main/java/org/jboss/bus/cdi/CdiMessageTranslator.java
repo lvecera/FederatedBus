@@ -37,6 +37,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * Message translator which connects to CDI.
+ *
  * @author <a href="mailto:lenka@vecerovi.com">Lenka Večeřa</a>
  */
 public class CdiMessageTranslator extends AbstractMessageTranslator {
@@ -47,12 +49,12 @@ public class CdiMessageTranslator extends AbstractMessageTranslator {
    private static final Logger log = LogManager.getLogger(CdiMessageTranslator.class);
 
    /**
-    * New CDI container, used to fire events.
+    * The CDI container used to fire events.
     */
    private WeldContainer weld;
 
    /**
-    * List of CDI message translator instances. Used to store instances.
+    * Static list of all CDI message translator instances. This bridges the message translator and the CDI system.
     */
    private static final List<CdiMessageTranslator> instances = new ArrayList<>();
 
@@ -61,6 +63,9 @@ public class CdiMessageTranslator extends AbstractMessageTranslator {
     */
    private List<Object> processedEvents = Collections.synchronizedList(new ArrayList<>());
 
+   /**
+    * Sets the default name of the translator.
+    */
    public CdiMessageTranslator() {
       name = "cdi";
    }
@@ -71,8 +76,9 @@ public class CdiMessageTranslator extends AbstractMessageTranslator {
    }
 
    /**
-    * Initialization of CDI. Sets weld container.
-    * @param weld This value is used for setting Weld container.
+    * Initializes CDI. Sets the Weld container.
+    *
+    * @param weld The CDI context used for message.
     */
    private void initCdi(final WeldContainer weld) {
       this.weld = weld;
@@ -97,9 +103,10 @@ public class CdiMessageTranslator extends AbstractMessageTranslator {
    }
 
    /**
-    * Processing event. If incoming event has been already processed, it is removed.
-    * Otherwise it creates message with headers and forwards it to the bus.
-    * @param event
+    * Processes all CDI events. If an incoming event has been already processed, it is removed from the cache of processed messages.
+    * Otherwise the event is translated into a message and forwarded to the bus.
+    *
+    * @param event The fired CDI event.
     */
    private void processEvent(Object event) {
       final Serializable payload = event instanceof Serializable ? (Serializable) event : event.toString();
@@ -107,7 +114,8 @@ public class CdiMessageTranslator extends AbstractMessageTranslator {
       if (processedEvents.contains(payload)) {
          processedEvents.remove(payload);
       } else {
-         final Message message = new MessageImpl(payload);;
+         final Message message = new MessageImpl(payload);
+         ;
 
          if (log.isDebugEnabled()) {
             log.debug("Processing message: {}", payload.toString());
@@ -119,8 +127,17 @@ public class CdiMessageTranslator extends AbstractMessageTranslator {
       }
    }
 
+   /**
+    * CDI bean catching all fired events.
+    */
    @ApplicationScoped
    public static class EventProcessor {
+
+      /**
+       * Catches all CDI events and sends them to all instances of CDI translators for processing.
+       *
+       * @param event The fired CDI event.
+       */
       public void processEvent(@Observes Object event) {
          for (CdiMessageTranslator translator : instances) {
             translator.processEvent(event);

@@ -20,6 +20,8 @@
 package org.jboss.bus.api;
 
 /**
+ * Contract definition of the main bus connecting all the systems together.
+ *
  * @author <a href="mailto:lenka@vecerovi.com">Lenka Večeřa</a>
  */
 public interface FederatedBus {
@@ -27,36 +29,39 @@ public interface FederatedBus {
    /**
     * Called by translators when there is a new message to process.
     *
-    * @param message to be processed
+    * @param message The message to be processed.
     */
    void processMessage(final Message message);
 
    /**
-    * Registers new message translator with this federated bus.
+    * Registers a new message translator with this federated bus.
+    * The translator is automatically initialized using the current compound context.
     *
-    * @param messageTranslator to be registered
+    * @param messageTranslator The message translator to be registered.
     */
    void registerTranslator(final MessageTranslator messageTranslator);
 
    /**
-    * Starts federated bus.
+    * Starts the federated bus. Also starts all the registered translators.
     */
    void start();
 
    /**
-    * Stops federated bus.
+    * Stops the federated bus. Also starts all the registered translators.
     */
    void stop();
 
    /**
-    * Gets compound context.
-    * @return Compound context.
+    * Gets the current compound context for this bus instance.
+    *
+    * @return The compound context.
     */
    CompoundContext getCompoundContext();
 
    /**
-    * Sets compound context.
-    * @param compoundContext A new compound context that will be set.
+    * Sets the current compound context for this bus instance.
+    *
+    * @param compoundContext A new compound context to be set.
     */
    void setCompoundContext(CompoundContext compoundContext);
 

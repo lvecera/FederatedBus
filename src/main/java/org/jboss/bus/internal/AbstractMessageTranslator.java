@@ -30,17 +30,19 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
+ * Common functionality of message translators. Handles inbound and outbound endpoints and translator naming.
+ *
  * @author <a href="mailto:lenka@vecerovi.com">Lenka Večeřa</a>
  */
 abstract public class AbstractMessageTranslator implements MessageTranslator {
 
    /**
-    * Federated bus to which message translator will be registered.
+    * Federated bus to which message translator is registered.
     */
    protected FederatedBus federatedBus;
 
    /**
-    * Set of input enpoints.
+    * Set of input endpoints.
     */
    protected Set<String> inputEndpoints;
 
@@ -55,10 +57,10 @@ abstract public class AbstractMessageTranslator implements MessageTranslator {
    protected String name = "abstract";
 
    /**
-    * Tells if message contains a signature of the message translator
-    * so the message is not sent to translator that it came from.
-    * @param headers
-    * @return
+    * Tells whether the message was already processed through the federated bus so that it is not processed
+    * repeatedly.
+    * @param headers The message headers that are checked for a spcific bus signature.
+    * @return True if and only if this message was already processed.
     */
    public static boolean isSigned(final Map<String, Object> headers) {
       return headers.containsKey(TRANSLATOR_SIGNATURE);
@@ -70,8 +72,8 @@ abstract public class AbstractMessageTranslator implements MessageTranslator {
    }
 
    /**
-    * Gets input endpoints as set.
-    * @return Set of input endpoints.
+    * Gets input endpoints as a set.
+    * @return The set of input endpoints.
     */
    public Set<String> getInputEndpointsAsSet() {
       return inputEndpoints;
@@ -86,8 +88,8 @@ abstract public class AbstractMessageTranslator implements MessageTranslator {
    }
 
    /**
-    * Gets output endpoints as set.
-    * @return Set of output endpoints.
+    * Gets output endpoints as a set.
+    * @return The set of output endpoints.
     */
    public Set<String> getOutputEndpointsAsSet() {
       return outputEndpoints;

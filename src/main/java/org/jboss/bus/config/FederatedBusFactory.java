@@ -20,9 +20,7 @@
 package org.jboss.bus.config;
 
 import io.vertx.core.Vertx;
-import io.vertx.core.impl.VertxImpl;
 import org.apache.camel.CamelContext;
-import org.apache.camel.ExchangeTimedOutException;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,7 +30,6 @@ import org.jboss.bus.api.FederatedBusException;
 import org.jboss.bus.api.MessageTranslator;
 import org.jboss.bus.config.model.Federated;
 import org.jboss.bus.config.model.PropertyType;
-import org.jboss.bus.internal.AbstractFederatedBus;
 import org.jboss.bus.internal.CompoundContextImpl;
 import org.jboss.bus.internal.ObjectFactory;
 import org.jboss.weld.environment.se.Weld;
@@ -47,8 +44,6 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -69,15 +64,23 @@ public class FederatedBusFactory {
    private static final Logger log = LogManager.getLogger(FederatedBusFactory.class);
 
    /**
-    * Gets default compound context.
-    * @return Compound context that contains Camel context, Vertx or Weld container.
+    * No instance is allowed.
+    */
+   private FederatedBusFactory() {
+   }
+
+   /**
+    * Gets the default compound context.
+    *
+    * @return Compound context that contains Camel context, Vert.x and Weld container.
     */
    public static CompoundContext getDefaultCompoundContext() {
       CamelContext camelContext = new DefaultCamelContext();
       try {
          camelContext.start();
       } catch (Exception e) {
-         log.error("Unable to start camel context: ", e);;
+         log.error("Unable to start camel context: ", e);
+         ;
       }
       CompoundContextImpl compoundContext = new CompoundContextImpl();
       compoundContext.putContext(CamelContext.class, camelContext);
@@ -93,10 +96,11 @@ public class FederatedBusFactory {
    }
 
    /**
-    * Gets model of bus based on XML file.
+    * Gets the model of a federated bus based on the configuration XML file.
+    *
     * @param fileName Name of the XML file containing the bus description.
-    * @return Federated
-    * @throws FederatedBusException It throws this exception when XML configuration cannot be validated.
+    * @return Object representation of the federated bus XML.
+    * @throws FederatedBusException When XML configuration cannot be validated.
     */
    private static Federated getBusModel(final String fileName) throws FederatedBusException {
       try {
@@ -121,14 +125,15 @@ public class FederatedBusFactory {
 
    /**
     * Parses properties.
+    *
     * @param properties List of properties that are parsed.
     * @return Parsed properties.
-    * @throws FederatedBusException This exception is thrown when property tag has no attribute value nor body set.
+    * @throws FederatedBusException When property tag has no attribute value nor body set.
     */
-   private static Properties parseProperties(final List<PropertyType> properties) throws FederatedBusException{
+   private static Properties parseProperties(final List<PropertyType> properties) throws FederatedBusException {
       final Properties myProps = new Properties();
 
-      for(final PropertyType pt: properties) {
+      for (final PropertyType pt : properties) {
          final String value = pt.getValue();
          final Element element = pt.getAny();
 
@@ -145,11 +150,12 @@ public class FederatedBusFactory {
    }
 
    /**
-    * Loading from XML. This method nitializes federated bus with given context.
-    * @param fileName The name of the XML file.
+    * Loads the federated buses from an XML. This method initializes federated bus with given context.
+    *
+    * @param fileName        The name of the XML file.
     * @param compoundContext Compound context that is used for initialization.
     * @return List of buses that are described in the XML file.
-    * @throws FederatedBusException Throws exception when loading from the XML is not successful.
+    * @throws FederatedBusException When loading from the XML is not successful.
     */
    public static List<FederatedBus> loadFromXml(final String fileName, final CompoundContext compoundContext) throws FederatedBusException {
       final List<FederatedBus> buses = new LinkedList<>();
@@ -175,10 +181,11 @@ public class FederatedBusFactory {
    }
 
    /**
-    * Loading from XML file and initialization of federated bus with default compound context.
+    * Loads the federated buses from an XML and initializes them with using the default compound context.
+    *
     * @param fileName The name of the XML file.
     * @return List of buses that are described in the XML file.
-    * @throws FederatedBusException Throws exception when loading from the XML is not successful.
+    * @throws FederatedBusException When loading from the XML is not successful.
     */
    public static List<FederatedBus> loadFromXml(final String fileName) throws FederatedBusException {
       return loadFromXml(fileName, getDefaultCompoundContext());
@@ -186,6 +193,7 @@ public class FederatedBusFactory {
 
    /**
     * Shuts down the compound context.
+    *
     * @param compoundContext Context that is about to be shut down.
     */
    public static void shutdownContext(CompoundContext compoundContext) {

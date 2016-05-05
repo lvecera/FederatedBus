@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Default compound context implementation. Just holds the contexts in a map.
+ *
  * @author <a href="mailto:lenka@vecerovi.com">Lenka Večeřa</a>
  */
 public class CompoundContextImpl implements CompoundContext {
@@ -37,10 +39,22 @@ public class CompoundContextImpl implements CompoundContext {
       return (T) contexts.get(clazz.getCanonicalName());
    }
 
+   /**
+    * Register a new context object. The context class is derived from the object instance. Please note that in many
+    * cases, the context instance is an ancestor or interface implementation and differs from the expected class value.
+    *
+    * @param context The context to be registered.
+    */
    public void putContext(final Object context) {
       contexts.put(context.getClass().getCanonicalName(), context);
    }
 
+   /**
+    * Registers a new context using the specified key class.
+    *
+    * @param iface   The key class under which the context is registered. Typically an interface implemented by the context.
+    * @param context The context to be registered.
+    */
    public void putContext(final Class iface, final Object context) {
       contexts.put(iface.getCanonicalName(), context);
    }
