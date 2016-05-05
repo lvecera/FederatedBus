@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<federated xmlns="urn:federated:bus:1.0">
+   <bus class="org.jboss.bus.simple.SimpleFederatedBus">
+      <properties>
+         <property name="threadPoolSize" value="100" />
+      </properties>
+      <translators>
+         <translator class="org.jboss.bus.vertx.VertxMessageTranslator">
+            <properties>
+               <property name="inputEndpoints" value="vertxbus" />
+            </properties>
+         </translator>
+         <translator class="org.jboss.bus.camel.CamelMessageTranslator">
+            <properties>
+               <property name="outputEndpoints" value="direct:testVertx" />
+            </properties>
+         </translator>
+      </translators>
+   </bus>
+</federated>

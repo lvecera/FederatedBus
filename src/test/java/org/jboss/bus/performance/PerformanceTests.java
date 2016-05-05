@@ -1,9 +1,9 @@
 /*
  * -----------------------------------------------------------------------\
  * FederatedBus
- * 
+ *  
  * Copyright (C) 2015 - 2016 the original author or authors.
- * 
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -39,6 +39,8 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import io.vertx.core.Vertx;
+
 /**
  * @author <a href="mailto:lenka@vecerovi.com">Lenka Večeřa</a>
  */
@@ -47,6 +49,7 @@ public class PerformanceTests {
    private static final Logger log = LogManager.getLogger(PerformanceTests.class);
 
    static WeldContainer cdi;
+   static Vertx vertx;
 
    @Test
    public void testSimple() throws Exception {
@@ -118,6 +121,24 @@ public class PerformanceTests {
       FederatedBusFactory.shutdownContext(federatedBus.getCompoundContext());
    }
 
+   @Test
+   public void testSimpleVertx() throws Exception {
+      final CompoundContext context = FederatedBusFactory.getDefaultCompoundContext();
+      vertx = context.getContext(Vertx.class);
+      final List<FederatedBus> buses = FederatedBusFactory.loadFromXml(FederatedBusFactoryTest.class.getResource("/performance5-bus.xml").getPath(), context);
+      final FederatedBus federatedBus = buses.get(0);
+
+      federatedBus.start();
+
+      CamelContext camelContext = context.getContext(CamelContext.class);
+      camelContext.addRoutes(new VertxInputRoute());
+
+      log.info("Running simple performance test. Press Ctrl-C to stop...");
+      promptEnterKey();
+
+      FederatedBusFactory.shutdownContext(federatedBus.getCompoundContext());
+   }
+
    private void promptEnterKey(){
       Scanner scanner = new Scanner(System.in);
       scanner.nextLine();
@@ -135,16 +156,28 @@ public class PerformanceTests {
 
       @Override
       public void configure() throws Exception {
-         from("jetty:http://0.0.0.0:8282/simple").bean(MyBean.class, "hello").from("direct:testCdi").setBody(simple("processed")).end();
+         from("jetty:http://0.0.0.0:8282/simple").bean(MyBean.class, "cdiHello").from("direct:testCdi").setBody(simple("processed")).end();
+      }
+   }
+
+   private static class VertxInputRoute extends RouteBuilder {
+
+      @Override
+      public void configure() throws Exception {
+         from("jetty:http://0.0.0.0:8282/simple").bean(MyBean.class, "vertxHello").from("direct:testVertx").setBody(simple("processed")).end();
       }
    }
 
    public static class MyBean {
 
-      public void hello(String c) {
+      public void cdiHello(String c) {
          if (!"abc".equals(c)) {
             PerformanceTests.cdi.event().select(String.class).fire("abc");
          }
+      }
+
+      public void vertxHello(String c) {
+         vertx.eventBus().send("vertxbus", c);
       }
    }
 }
