@@ -6,7 +6,7 @@
 
    <groupId>org.jboss</groupId>
    <artifactId>bus</artifactId>
-   <version>1.0-SNAPSHOT</version>
+   <version>1.0</version>
 
    <properties>
       <version.log4j>2.5</version.log4j>
@@ -20,6 +20,7 @@
 
       <version.findbugs>3.0.3</version.findbugs>
       <version.jacoco>0.7.6.201602180812</version.jacoco>
+      <version.javadoc>2.10.3</version.javadoc>
    </properties>
 
    <dependencies>
@@ -134,7 +135,17 @@
                </execution>
             </executions>
          </plugin>
-
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>${version.javadoc}</version>
+            <configuration>
+               <windowtitle>${project.name} API Documentation (version ${project.version})</windowtitle>
+               <doctitle>${project.name} API Documentation (version ${project.version})</doctitle>
+               <show>public</show>
+               <excludePackageNames>org.jboss.bus.config.model</excludePackageNames>
+            </configuration>
+         </plugin>
       </plugins>
    </build>
 
